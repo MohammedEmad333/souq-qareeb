@@ -11,7 +11,13 @@
 <header class="sq-header">
   <div class="sq-container sq-header-inner">
     <div>
-      <a class="sq-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( get_bloginfo( 'name' ) ?: 'سوق قريب' ); ?></a>
+      <a class="sq-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+<?php if ( file_exists( get_template_directory() . '/assets/images/logo-header.png' ) ) : ?>
+<img class="sq-brand-image" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-header.png' ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ?: 'سوق قريب' ); ?>" width="190" height="98">
+<?php else : ?>
+<?php echo esc_html( get_bloginfo( 'name' ) ?: 'سوق قريب' ); ?>
+<?php endif; ?>
+</a>
       <p class="sq-tagline">بيع، بدّل، تبرّع</p>
     </div>
     <nav class="sq-nav" aria-label="<?php esc_attr_e( 'Primary navigation', 'souq-qareeb' ); ?>">
