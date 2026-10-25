@@ -1,0 +1,31 @@
+name: Theme publishing tool checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash -n scripts/publish-block-theme.sh
+      - run: docker run --rm -v "$PWD:/work:ro" -w /work php:8.3-cli php -l scripts/publish-block-theme.php
+      - name: Validate baseline and desired snapshots
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for folder in ('baseline', 'exports'):
+              for name, expected in [('header','wp_template_part'),('navigation','wp_navigation'),('global-styles','wp_global_styles')]:
+                  d=json.loads(Path(f'wordpress/{folder}/{name}.json').read_text())
+                  assert d['type']==expected and d['slug']
+                  assert isinstance(d['content'],str) and isinstance(d['title'],str)
+          PY

@@ -1,0 +1,6 @@
+{
+  "type": "wp_global_styles",
+  "slug": "wp-global-styles-twentytwentythree",
+  "title": "Custom Styles",
+  "content": "{\"styles\":{\"elements\":{\"button\":{\"color\":{\"text\":\"var:preset|color|base\"}}}},\"settings\":{\"color\":{\"palette\":{\"theme\":[{\"color\":\"#ffffff\",\"name\":\"Base\",\"slug\":\"base\"},{\"color\":\"#000000\",\"name\":\"Contrast\",\"slug\":\"contrast\"},{\"color\":\"#176b55\",\"name\":\"Primary\",\"slug\":\"primary\"},{\"color\":\"#345C00\",\"name\":\"Secondary\",\"slug\":\"secondary\"},{\"color\":\"#F6F6F6\",\"name\":\"Tertiary\",\"slug\":\"tertiary\"}]}}},\"isGlobalStylesUserThemeJSON\":true,\"version\":3}"
+}
