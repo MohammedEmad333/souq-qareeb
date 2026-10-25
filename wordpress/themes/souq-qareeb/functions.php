@@ -17,5 +17,6 @@ add_action( 'after_setup_theme', function () {
 
 add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'souq-qareeb-style', get_stylesheet_uri(), array(), (string) filemtime( get_stylesheet_directory() . '/style.css' ) );
+    wp_enqueue_script( 'souq-qareeb-menu', get_template_directory_uri() . '/assets/js/menu.js', array(), (string) filemtime( get_template_directory() . '/assets/js/menu.js' ), true );
     wp_enqueue_style( 'souq-qareeb-storefront', get_template_directory_uri() . '/assets/css/storefront.css', array( 'souq-qareeb-style' ), (string) filemtime( get_template_directory() . '/assets/css/storefront.css' ) );
 } );

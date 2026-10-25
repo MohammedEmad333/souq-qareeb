@@ -49,3 +49,24 @@ Text Domain: souq-qareeb
 .sq-nav li{flex-shrink:0}
 .sq-nav a{font-size:.82rem;padding:6px 10px}
 }
+
+/* Mobile dropdown navigation */
+.sq-menu-toggle{display:none}
+@media(max-width:760px){
+.sq-header-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;position:relative;min-height:64px;padding-block:6px}
+.sq-header-inner>div:first-child{min-width:0}
+.sq-brand-image{width:105px;max-height:58px}
+.sq-menu-toggle{display:inline-flex;align-items:center;justify-content:center;grid-column:2;grid-row:1;cursor:pointer;border:1px solid var(--sq-border);background:#fff;color:var(--sq-ink);border-radius:10px;min-width:44px;min-height:44px;font-size:25px}
+.sq-nav{display:none;grid-column:1/-1;overflow:visible;width:100%;padding-block:8px;border-top:1px solid var(--sq-border)}
+.sq-nav.sq-nav--open{display:block}
+.sq-nav ul{display:flex;flex-direction:column;align-items:stretch;flex-wrap:nowrap;width:100%;gap:4px;margin:0;padding:0}
+.sq-nav li{width:100%}
+.sq-nav a{display:block;padding:10px 14px;white-space:normal;font-size:.94rem}
+.sq-hero{padding-block:28px}
+.sq-hero h1{font-size:clamp(1.85rem,7vw,2.55rem);line-height:1.35}
+.sq-hero p{font-size:1rem}
+.sq-hero-grid{gap:22px}
+.sq-panel{padding:16px}
+.sq-hero-illustration{max-height:210px;object-fit:cover}
+}
+@media(min-width:761px){.sq-menu-toggle{display:none!important}}
