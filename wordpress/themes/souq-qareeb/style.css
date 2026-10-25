@@ -70,3 +70,20 @@ Text Domain: souq-qareeb
 .sq-hero-illustration{max-height:210px;object-fit:cover}
 }
 @media(min-width:761px){.sq-menu-toggle{display:none!important}}
+
+/* Official typography: font fallbacks remain available offline. */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+body,button,input,select,textarea{font-family:"Cairo","Segoe UI",Tahoma,sans-serif}
+:lang(en){font-family:"Inter",system-ui,sans-serif}
+@media(max-width:760px){
+.sq-header-inner{min-height:60px;padding-block:4px}
+.sq-brand-image{width:98px;max-height:52px}
+.sq-hero{padding-block:22px}
+.sq-hero h1{font-size:clamp(1.65rem,6vw,2.15rem);line-height:1.32}
+.sq-hero p{font-size:.94rem;line-height:1.8}
+.sq-hero-grid{gap:14px}
+.sq-panel{padding:12px}
+.sq-hero-illustration{max-height:180px;object-fit:cover}
+.sq-actions{margin-top:15px;gap:8px}
+.sq-button{padding:9px 14px;font-size:.9rem}
+}
