@@ -1,0 +1,44 @@
+services:
+  database:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: souq_wordpress
+      MARIADB_USER: souq_user
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in .env}
+    volumes:
+      - souq_db_data:/var/lib/mysql
+    networks:
+      - souq_internal
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      - database
+    ports:
+      - "127.0.0.1:8095:80"
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_USER: souq_user
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      WORDPRESS_DB_NAME: souq_wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        if (
+          isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+          str_contains($$_SERVER['HTTP_X_FORWARDED_PROTO'], 'https')
+        ) {
+          $$_SERVER['HTTPS'] = 'on';
+        }
+    volumes:
+      - souq_wp_data:/var/www/html
+    networks:
+      - souq_internal
+
+volumes:
+  souq_db_data:
+  souq_wp_data:
+
+networks:
+  souq_internal:
