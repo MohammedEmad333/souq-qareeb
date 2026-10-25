@@ -90,3 +90,22 @@ body.woocommerce-cart .sq-main{padding-top:15px}
 body.woocommerce-checkout .sq-main>article>h1{margin:0 0 22px;font-size:clamp(1.75rem,4vw,2.5rem)}
 body.woocommerce-checkout .wp-block-woocommerce-checkout{max-width:1100px;margin-inline:auto}
 body.woocommerce-checkout .wc-block-components-notice-banner{border-radius:12px;line-height:1.8}
+
+/* Empty cart WooCommerce legacy grid uses flex sizing, override both container and items. */
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__products{
+display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:16px!important;margin:0!important;padding:0!important;list-style:none}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__products>.wc-block-grid__product{
+flex:none!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:0 0 14px!important;display:flex;flex-direction:column}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-image,
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-image a{display:block;width:100%;margin:0}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-image img{display:block;width:100%!important;max-width:100%!important;aspect-ratio:1/1;object-fit:cover;margin:0!important}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-title{margin:10px 10px 4px!important;font-size:.92rem;line-height:1.5;overflow-wrap:anywhere}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-price{margin:0 10px 12px!important}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product .wp-block-button{margin:auto 10px 0!important}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product .wp-block-button__link{display:block;width:100%;padding:10px 6px;font-size:.85rem}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wp-block-heading{margin-block:18px 12px}
+@media(max-width:760px){
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-title{font-size:.83rem}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__product .wp-block-button__link{font-size:.77rem}}
+@media(max-width:340px){body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-grid__products{grid-template-columns:1fr!important}}
