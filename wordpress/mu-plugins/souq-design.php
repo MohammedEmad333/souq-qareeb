@@ -207,7 +207,7 @@ add_filter('render_block_woocommerce/product-collection', function ($content) {
         . '<h2 id="souq-hero-title">أغراض مفيدة، وفرص أقرب إليك</h2>'
         . '<p>اكتشف أغراضًا مستعملة بأسعار مناسبة، وابحث حسب المنطقة وطريقة التعامل: بيع أو تبديل أو تبرع.</p>'
         . '<div class="souq-hero__links">'
-        . '<a href="' . esc_url($shop) . '#souq-filters">تصفح المنتجات</a>'
+        . '<a href="' . esc_url($shop) . '#souq-products">تصفح المنتجات</a>'
         . '<a href="' . esc_url($shop) . '#souq-products">اكتشف المعروض</a>'
         . '</div></section>';
     return $intro . $content;
