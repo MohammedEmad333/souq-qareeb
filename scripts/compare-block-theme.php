@@ -37,7 +37,7 @@ function normalizeBlockSpacing(string $content): string
 {
     return preg_replace(
         '/(?<=-->)[ \\t]*\\R(?:[ \\t]*\\R)+(?=[ \\t]*<!-- wp:)/',
-        "\\n",
+        "\n",
         $content
     ) ?? $content;
 }
