@@ -181,3 +181,25 @@ body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-cart__emp
  width:80px!important;height:80px!important;max-width:80px!important;min-height:80px!important;
  }
 }
+
+/* Replace the WooCommerce decorative pseudo-element entirely.
+   The branded icon is a standalone background on the heading, not layered on ::before. */
+body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon::before,
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__title::before{
+ content:none!important;display:none!important;background:none!important;
+ width:0!important;height:0!important;min-height:0!important;margin:0!important;
+}
+body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon{
+ background-image:url("../images/empty-cart-icon.png")!important;
+ background-repeat:no-repeat!important;background-position:center top!important;
+ background-size:80px 80px!important;
+ padding-top:96px!important;
+ min-height:96px!important;
+ margin-top:4px!important;
+ text-align:center;
+}
+@media(max-width:760px){
+ body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon{
+  background-size:80px 80px!important;padding-top:94px!important
+ }
+}
