@@ -13,6 +13,7 @@ $shop_url = ( function_exists( 'wc_get_page_id' ) && wc_get_page_id( 'shop' ) > 
     <span class="sq-eyebrow">سوق قريب — غزة</span>
     <h1>أغراض مفيدة، بأسعار أقرب إليك</h1>
     <p>بيع، بدّل، أو تبرّع بأغراضك المستعملة، واكتشف ما تحتاجه من مجتمعك.</p>
+    <?php get_search_form(); ?>
     <div class="sq-actions">
       <a class="sq-button" href="<?php echo esc_url( $shop_url ); ?>">تصفّح المنتجات</a>
       <a class="sq-button sq-button--outline" href="#how-it-works">كيف يعمل؟</a>
