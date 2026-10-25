@@ -132,3 +132,30 @@ body.woocommerce-account .woocommerce-MyAccount-navigation a{display:block;paddi
 body.woocommerce-account .woocommerce-MyAccount-content{background:#fff;border:1px solid var(--sq-border);border-radius:16px;padding:clamp(14px,3vw,24px)}
 body.woocommerce-account .woocommerce form.login,body.woocommerce-account .woocommerce form.register{background:#fff;border:1px solid var(--sq-border);border-radius:16px}
 @media(max-width:760px){body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__title::before{font-size:52px!important}body.woocommerce-account .woocommerce-MyAccount-navigation ul{flex-direction:column}}
+
+/* WooCommerce empty cart icon is a background image on ::before, not a glyph. */
+body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon::before{
+  display:block!important;
+  width:78px!important;
+  height:78px!important;
+  max-width:78px!important;
+  min-height:0!important;
+  background-size:contain!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  margin:0 auto 12px!important;
+}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__title{
+  margin-block:6px 10px!important;
+}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .is-style-dots.wp-block-separator{
+  display:none!important;
+}
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wp-block-heading{
+  margin-block:12px!important;
+}
+@media(max-width:760px){
+ body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon::before{
+  width:72px!important;height:72px!important;max-width:72px!important;
+ }
+}
