@@ -26,3 +26,10 @@ Text Domain: souq-qareeb
 .sq-main{padding-block:24px}
 .sq-footer-inner{gap:8px;font-size:.87rem}
 }
+
+/* Official Souq Qareeb identity, overrides the old theme tokens. */
+:root{--sq-green:#16a34a;--sq-ink:#0f2d3d;--sq-sage:#eaf6ee;--sq-cream:#f8faf9;--sq-muted:#51656a}
+.sq-brand-image{display:block;width:160px;height:auto;max-height:85px;object-fit:contain;object-position:right center}
+.sq-hero-illustration{display:block;width:100%;height:auto;border-radius:var(--sq-radius)}
+.sq-feature-art{display:block;width:100%;height:auto;border-radius:12px;margin-bottom:12px}
+@media(max-width:760px){.sq-brand-image{width:124px;max-height:65px}.sq-hero-illustration{max-height:260px;object-fit:cover}}
