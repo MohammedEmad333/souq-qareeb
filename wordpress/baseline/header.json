@@ -1,0 +1,6 @@
+{
+  "type": "wp_template_part",
+  "slug": "header",
+  "title": "Header",
+  "content": "<!-- wp:group {\"layout\":{\"type\":\"constrained\"}} -->\n<div class=\"wp-block-group\"><!-- wp:group {\"align\":\"wide\",\"style\":{\"spacing\":{\"padding\":{\"bottom\":\"var:preset|spacing|40\"}}},\"layout\":{\"type\":\"flex\",\"justifyContent\":\"space-between\"}} -->\n<div class=\"wp-block-group alignwide\" style=\"padding-bottom:var(--wp--preset--spacing--40)\"><!-- wp:group {\"layout\":{\"type\":\"flex\",\"flexWrap\":\"wrap\",\"justifyContent\":\"left\"}} -->\n<div class=\"wp-block-group\"><!-- wp:navigation {\"ref\":4,\"layout\":{\"type\":\"flex\",\"setCascadingProperties\":true,\"justifyContent\":\"right\"}} /-->\n<!-- wp:woocommerce/mini-cart {\"style\":{\"typography\":{\"fontSize\":\"var(\\u002d\\u002dwp\\u002d\\u002dpreset\\u002d\\u002dfont-size\\u002d\\u002dsmall)\"}}} /-->\n<!-- wp:site-logo {\"width\":160} /--></div>\n<!-- /wp:group --></div>\n<!-- /wp:group --></div>\n<!-- /wp:group -->"
+}
