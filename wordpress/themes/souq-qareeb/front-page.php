@@ -71,6 +71,14 @@ if ( taxonomy_exists( 'product_cat' ) ) {
     <div class="sq-home-categories">
       <?php foreach ( $categories as $category ) : ?>
       <a class="sq-home-category" href="<?php echo esc_url( get_term_link( $category ) ); ?>">
+        <?php $thumbnail_id = (int) get_term_meta( $category->term_id, 'thumbnail_id', true ); ?>
+        <?php if ( $thumbnail_id ) : ?>
+          <?php echo wp_get_attachment_image( $thumbnail_id, 'thumbnail', false, array( 'class' => 'sq-home-category-thumb', 'alt' => '', 'loading' => 'lazy' ) ); ?>
+        <?php else : ?>
+          <span class="sq-home-category-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+          </span>
+        <?php endif; ?>
         <strong><?php echo esc_html( $category->name ); ?></strong>
         <span><?php echo esc_html( number_format_i18n( $category->count ) ); ?> منتج</span>
       </a>
