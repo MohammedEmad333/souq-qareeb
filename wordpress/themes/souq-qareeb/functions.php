@@ -17,4 +17,5 @@ add_action( 'after_setup_theme', function () {
 
 add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'souq-qareeb-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ) );
+    wp_enqueue_style( 'souq-qareeb-storefront', get_template_directory_uri() . '/assets/css/storefront.css', array( 'souq-qareeb-style' ), wp_get_theme()->get( 'Version' ) );
 } );
