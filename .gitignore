@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+wp-config.php
+wp-config-*.php
+*.sql
+*.sql.gz
+*.daf
+*.zip
+*.tar
+*.tar.gz
+*.bak
+migration/
+backups/
+uploads/
+*.log
+.DS_Store
