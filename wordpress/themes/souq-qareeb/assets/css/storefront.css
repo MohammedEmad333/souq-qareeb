@@ -16,3 +16,22 @@
 .sq-shop .woocommerce-ordering,.sq-shop .woocommerce-result-count{float:none!important;display:block;max-width:100%;margin-bottom:14px}
 .sq-shop .woocommerce-ordering select{max-width:100%;padding:8px;border-radius:9px}
 }
+
+/* Product detail: typography, gallery, purchase controls and related products. */
+.sq-shop div.product{display:flow-root}
+.sq-shop div.product .product_title{font-size:clamp(1.55rem,3vw,2.4rem);line-height:1.5;margin-block:0 16px}
+.sq-shop div.product .woocommerce-product-gallery{margin-bottom:28px}
+.sq-shop div.product .woocommerce-product-gallery img{border-radius:14px}
+.sq-shop div.product .summary{background:#fff;border:1px solid var(--sq-border);border-radius:16px;padding:clamp(18px,3vw,32px)}
+.sq-shop div.product .summary .price{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;color:var(--sq-green)}
+.sq-shop div.product .summary .stock{font-weight:700}
+.sq-shop div.product form.cart{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sq-shop div.product form.cart .button,.sq-shop .woocommerce button.button.alt{background:var(--sq-green);color:#fff;border-radius:10px;min-height:44px;padding:12px 20px}
+.sq-shop div.product form.cart .button:hover,.sq-shop .woocommerce button.button.alt:hover{background:#107b39}
+.sq-shop .woocommerce-tabs,.sq-shop .related{clear:both;padding-top:22px}
+.sq-shop .woocommerce-tabs .panel{background:#fff;border:1px solid var(--sq-border);padding:18px;border-radius:12px}
+@media(max-width:760px){
+.sq-shop div.product .summary{padding:16px}
+.sq-shop div.product .product_title{font-size:1.45rem}
+.sq-shop div.product form.cart .button{flex:1}
+}
