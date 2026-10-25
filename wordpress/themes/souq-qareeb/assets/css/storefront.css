@@ -159,3 +159,25 @@ body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wp-block-heading{
   width:72px!important;height:72px!important;max-width:72px!important;
  }
 }
+
+/* Official brand mark in the empty-cart state, replacing WooCommerce's stock background.
+   Upload the approved PNG as assets/images/empty-cart-icon.png with the theme. */
+body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon::before,
+body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__title::before{
+ content:""!important;
+ display:block!important;
+ width:84px!important;height:84px!important;
+ max-width:84px!important;min-height:84px!important;
+ margin:0 auto 14px!important;
+ background-image:url("../images/empty-cart-icon.png")!important;
+ background-position:center!important;
+ background-size:contain!important;
+ background-repeat:no-repeat!important;
+ border:0!important;border-radius:0!important;
+}
+@media(max-width:760px){
+ body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon::before,
+ body.woocommerce-cart .wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__title::before{
+ width:80px!important;height:80px!important;max-width:80px!important;min-height:80px!important;
+ }
+}
