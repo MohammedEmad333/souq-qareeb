@@ -1,0 +1,22 @@
+name: Docker Compose checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compose-config:
+    name: Validate Compose config
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate Docker Compose without secrets
+        run: docker compose --env-file .env.example -f compose.yaml config --quiet
