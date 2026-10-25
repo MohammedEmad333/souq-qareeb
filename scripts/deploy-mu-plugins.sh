@@ -69,12 +69,13 @@ for file in "${plugins[@]}"; do
   docker exec "$CONTAINER" php -l "$STAGE/$file" >/dev/null
 done
 
-set +e
+rc=0
 for file in "${plugins[@]}"; do
-  docker exec "$CONTAINER" cp "$STAGE/$file" "$DEST/$file" || break
+  if ! docker exec "$CONTAINER" cp "$STAGE/$file" "$DEST/$file"; then
+    rc=1
+    break
+  fi
 done
-rc=$?
-set -e
 if (( rc != 0 )); then
   echo "Deployment failed; attempting automatic file rollback." >&2
   for file in "${plugins[@]}"; do docker cp "$SNAPSHOT/$file" "$CONTAINER:$DEST/$file" || true; done
