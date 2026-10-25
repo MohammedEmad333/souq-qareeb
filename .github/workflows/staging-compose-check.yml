@@ -1,0 +1,24 @@
+name: Staging Compose checks
+on:
+  pull_request:
+    paths:
+      - 'compose.staging.yaml'
+      - '.github/workflows/staging-compose-check.yml'
+      - 'scripts/STAGING_STOREFRONT.md'
+  push:
+    branches: [main]
+    paths:
+      - 'compose.staging.yaml'
+      - '.github/workflows/staging-compose-check.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate staging Compose
+        env:
+          STAGING_DB_PASSWORD: dummy-ci-only
+          STAGING_DB_ROOT_PASSWORD: dummy-root-ci-only
+        run: docker compose -p souq-qareeb-staging -f compose.staging.yaml config --quiet

@@ -1,0 +1,50 @@
+# Standalone staging: separate containers, network and volumes from production.
+# Run with: docker compose --env-file .env.staging -p souq-qareeb-staging -f compose.staging.yaml up -d
+services:
+  database:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: souq_staging
+      MARIADB_USER: souq_staging
+      MARIADB_PASSWORD: ${STAGING_DB_PASSWORD:?Set STAGING_DB_PASSWORD in .env.staging}
+      MARIADB_ROOT_PASSWORD: ${STAGING_DB_ROOT_PASSWORD:?Set STAGING_DB_ROOT_PASSWORD in .env.staging}
+    volumes:
+      - db_staging:/var/lib/mysql
+    networks:
+      - staging_internal
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8096:80"
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_USER: souq_staging
+      WORDPRESS_DB_PASSWORD: ${STAGING_DB_PASSWORD:?Set STAGING_DB_PASSWORD in .env.staging}
+      WORDPRESS_DB_NAME: souq_staging
+      WORDPRESS_CONFIG_EXTRA: |
+        if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+          $$_SERVER['HTTPS'] = 'on';
+        }
+    volumes:
+      - wp_staging:/var/www/html
+      - ./wordpress/themes/souq-qareeb:/var/www/html/wp-content/themes/souq-qareeb:ro
+    networks:
+      - staging_internal
+
+volumes:
+  db_staging:
+  wp_staging:
+
+networks:
+  staging_internal:
