@@ -20,7 +20,10 @@
 </a>
       <p class="sq-tagline">بيع، بدّل، تبرّع</p>
     </div>
-    <nav class="sq-nav" aria-label="<?php esc_attr_e( 'Primary navigation', 'souq-qareeb' ); ?>">
+    <button class="sq-menu-toggle" type="button" aria-controls="sq-primary-nav" aria-expanded="false" aria-label="فتح القائمة">
+      <span aria-hidden="true">☰</span><span class="screen-reader-text">القائمة</span>
+    </button>
+    <nav id="sq-primary-nav" class="sq-nav" aria-label="<?php esc_attr_e( 'Primary navigation', 'souq-qareeb' ); ?>">
       <?php
       wp_nav_menu( array(
           'theme_location' => 'primary',
