@@ -33,3 +33,19 @@ Text Domain: souq-qareeb
 .sq-hero-illustration{display:block;width:100%;height:auto;border-radius:var(--sq-radius)}
 .sq-feature-art{display:block;width:100%;height:auto;border-radius:12px;margin-bottom:12px}
 @media(max-width:760px){.sq-brand-image{width:124px;max-height:65px}.sq-hero-illustration{max-height:260px;object-fit:cover}}
+
+/* Keep branding compact even on mobile browsers with old cached styles. */
+.sq-header-inner{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:18px;padding-block:12px}
+.sq-brand{display:inline-flex;align-items:center;max-width:100%;text-decoration:none}
+.sq-brand-image{width:148px;max-width:148px;max-height:76px;height:auto;object-fit:contain;object-position:center}
+.sq-header .sq-tagline{display:none}
+.sq-nav{min-width:0}
+.sq-nav ul{justify-content:flex-end}
+@media(max-width:760px){
+.sq-header-inner{grid-template-columns:1fr;gap:8px;padding-block:10px}
+.sq-brand-image{width:116px;max-width:116px;max-height:65px}
+.sq-nav{width:100%;overflow-x:auto;scrollbar-width:thin}
+.sq-nav ul{justify-content:flex-start;display:flex;flex-wrap:nowrap;width:max-content;min-width:100%;gap:8px}
+.sq-nav li{flex-shrink:0}
+.sq-nav a{font-size:.82rem;padding:6px 10px}
+}
