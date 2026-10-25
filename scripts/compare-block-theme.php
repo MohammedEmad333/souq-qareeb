@@ -31,6 +31,18 @@ $files = [
 
 $changed = false;
 
+// Ignore blank-only lines only between adjacent self-closing block comments.
+// Do not strip blank lines within paragraph/text block content.
+function normalizeBlockSpacing(string $content): string
+{
+    return preg_replace(
+        '/(?<=-->)[ \\t]*\\R(?:[ \\t]*\\R)+(?=[ \\t]*<!-- wp:)/',
+        "\n",
+        $content
+    ) ?? $content;
+}
+
+
 foreach ($files as $file => $expectedType) {
     $raw = file_get_contents(rtrim($directory, '/') . '/' . $file);
     $saved = $raw === false ? null : json_decode($raw, true);
@@ -59,8 +71,8 @@ foreach ($files as $file => $expectedType) {
 
     $live = $matches[0];
     $sameContent = hash_equals(
-        hash('sha256', $saved['content']),
-        hash('sha256', $live->post_content)
+        hash('sha256', normalizeBlockSpacing($saved['content'])),
+        hash('sha256', normalizeBlockSpacing($live->post_content))
     );
     $sameTitle = ($saved['title'] ?? '') === $live->post_title;
 
