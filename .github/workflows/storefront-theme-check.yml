@@ -1,0 +1,21 @@
+name: Storefront theme PHP lint
+on:
+  push:
+    paths:
+      - 'wordpress/themes/souq-qareeb/**'
+      - '.github/workflows/storefront-theme-check.yml'
+  pull_request:
+    paths:
+      - 'wordpress/themes/souq-qareeb/**'
+      - '.github/workflows/storefront-theme-check.yml'
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check PHP syntax
+        run: |
+          docker run --rm -v "$PWD:/src:ro" -w /src php:8.3-cli sh -ec 'find wordpress/themes/souq-qareeb -type f -name "*.php" -exec php -l {} \;'
