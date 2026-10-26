@@ -358,3 +358,107 @@ body,button,input,select,textarea{font-family:"Cairo","Segoe UI",Tahoma,sans-ser
 @media(prefers-reduced-motion:reduce){
 .sq-home-v3 .sq-home-categories{scroll-behavior:auto}
 }
+
+/* Compact mobile footer v2 — real footer.php selectors, no markup changes. */
+@media (max-width: 760px) {
+  .sq-footer { padding: 0; }
+  .sq-footer .sq-footer-main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px 14px;
+    align-items: start;
+    padding-block: 22px 15px;
+    padding-inline: 16px;
+  }
+  .sq-footer .sq-footer-about {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+  .sq-footer .sq-footer-brand {
+    display: inline-flex;
+    margin-inline: auto;
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  .sq-footer .sq-footer-brand img {
+    width: 108px;
+    max-height: 62px;
+    height: auto;
+    margin: 0;
+    object-fit: contain;
+  }
+  .sq-footer .sq-footer-about p {
+    max-width: 35ch;
+    margin: 10px auto 0;
+    font-size: .8rem;
+    line-height: 1.75;
+    text-align: center;
+    color: #d6e4eb;
+  }
+  .sq-footer .sq-footer-links {
+    min-width: 0;
+    text-align: center;
+  }
+  .sq-footer .sq-footer-links h2 {
+    font-size: .92rem;
+    margin: 0 0 7px;
+    line-height: 1.55;
+    color: #fff;
+  }
+  .sq-footer .sq-footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .sq-footer .sq-footer-links li + li {
+    margin-top: 4px;
+  }
+  .sq-footer .sq-footer-links a {
+    display: inline-block;
+    padding-block: 3px;
+    font-size: .77rem;
+    line-height: 1.6;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .sq-footer .sq-footer-message {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px 12px;
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid #ffffff24;
+    text-align: center;
+  }
+  .sq-footer .sq-footer-message h2 {
+    display: none;
+  }
+  .sq-footer .sq-footer-message p {
+    margin: 0;
+    font-size: .84rem;
+    line-height: 1.6;
+    font-weight: 750;
+  }
+  .sq-footer .sq-footer-message span {
+    font-size: .76rem;
+    line-height: 1.6;
+  }
+  .sq-footer .sq-footer-bottom {
+    padding-block: 11px;
+    text-align: center;
+    font-size: .72rem;
+    line-height: 1.6;
+  }
+  .sq-footer .sq-footer-bottom .sq-container {
+    padding-inline: 16px;
+    text-align: center;
+  }
+}
+@media (max-width: 350px) {
+  .sq-footer .sq-footer-main { gap: 14px 10px; }
+  .sq-footer .sq-footer-links h2 { font-size: .85rem; }
+  .sq-footer .sq-footer-links a { font-size: .73rem; }
+}
