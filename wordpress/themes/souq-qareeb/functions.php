@@ -20,3 +20,69 @@ add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_script( 'souq-qareeb-menu', get_template_directory_uri() . '/assets/js/menu.js', array(), (string) filemtime( get_template_directory() . '/assets/js/menu.js' ), true );
     wp_enqueue_style( 'souq-qareeb-storefront', get_template_directory_uri() . '/assets/css/storefront.css', array( 'souq-qareeb-style' ), (string) filemtime( get_template_directory() . '/assets/css/storefront.css' ) );
 } );
+
+/**
+ * Apply only user-selected, existing product terms to native WooCommerce queries.
+ * Price bounds are handled by WooCommerce's own min_price/max_price support.
+ */
+function souq_qareeb_apply_product_filters( $query ) {
+    if ( is_admin() ) {
+        return;
+    }
+    $filters = array(
+        'sq_category' => 'product_cat',
+        'sq_condition' => 'pa_condition',
+    );
+    $tax_query = (array) $query->get( 'tax_query' );
+    $added = false;
+
+    foreach ( $filters as $parameter => $taxonomy ) {
+        if ( ! taxonomy_exists( $taxonomy ) || ! isset( $_GET[ $parameter ] ) || ! is_scalar( $_GET[ $parameter ] ) ) {
+            continue;
+        }
+        $slug = sanitize_title( wp_unslash( $_GET[ $parameter ] ) );
+        if ( '' === $slug || ! term_exists( $slug, $taxonomy ) ) {
+            continue;
+        }
+        $tax_query[] = array(
+            'taxonomy' => $taxonomy,
+            'field'    => 'slug',
+            'terms'    => array( $slug ),
+        );
+        $added = true;
+    }
+    if ( $added ) {
+        $query->set( 'tax_query', $tax_query );
+    }
+}
+add_action( 'woocommerce_product_query', 'souq_qareeb_apply_product_filters', 20 );
+
+/* WordPress product searches may use the native search template, not is_shop(). */
+add_action( 'pre_get_posts', function ( $query ) {
+    if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+        return;
+    }
+    $post_type = $query->get( 'post_type' );
+    if ( 'product' === $post_type || ( is_array( $post_type ) && in_array( 'product', $post_type, true ) ) ) {
+        souq_qareeb_apply_product_filters( $query );
+    }
+}, 20 );
+
+/* Small truthful label: show a real saved product condition when one exists. */
+add_action( 'woocommerce_before_shop_loop_item_title', function () {
+    if ( ! taxonomy_exists( 'pa_condition' ) ) {
+        return;
+    }
+    $terms = get_the_terms( get_the_ID(), 'pa_condition' );
+    if ( $terms && ! is_wp_error( $terms ) ) {
+        echo '<span class="sq-product-condition">' . esc_html( $terms[0]->name ) . '</span>';
+    }
+}, 20 );
+
+/* Avoid duplicate shop titles: the custom listing header provides the heading. */
+add_filter( 'woocommerce_show_page_title', function ( $show ) {
+    if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() ) ) {
+        return false;
+    }
+    return $show;
+} );
