@@ -247,3 +247,20 @@ add_action( 'woocommerce_account_my-listings_endpoint', function () {
         wc_print_notice( 'تعذّر سحب الإعلان. حاول مرة أخرى.', 'error' );
     }
 }, 1 );
+
+/**
+ * Translate WooCommerce's stock English registration notice, while preserving
+ * any merchant-customized privacy text and the actual privacy-policy link.
+ */
+add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
+    if ( 'registration' !== $type || ! is_string( $text ) ) {
+        return $text;
+    }
+
+    $english_default = 'Your personal data will be used to support your experience throughout this website';
+    if ( false === strpos( $text, $english_default ) ) {
+        return $text;
+    }
+
+    return 'سنستخدم بياناتك الشخصية لتوفير خدمات سوق قريب وإدارة الوصول إلى حسابك، وللأغراض الأخرى الموضّحة في [privacy_policy].';
+}, 20, 2 );
