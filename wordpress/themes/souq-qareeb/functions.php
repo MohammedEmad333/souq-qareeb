@@ -144,6 +144,7 @@ add_action( 'woocommerce_single_product_summary', function () {
 
 /* A page with slug add-listing renders a moderated form; no public API is exposed. */
 require_once get_template_directory() . '/inc/listings.php';
+require_once get_template_directory() . '/inc/listing-edit.php';
 
 /* Add an entry to the existing primary menu only after the page exists. */
 add_filter( 'wp_nav_menu_items', function ( $items, $args ) {
