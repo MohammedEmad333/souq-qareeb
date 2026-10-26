@@ -70,12 +70,17 @@ add_action( 'pre_get_posts', function ( $query ) {
 
 /* Small truthful label: show a real saved product condition when one exists. */
 add_action( 'woocommerce_before_shop_loop_item_title', function () {
-    if ( ! taxonomy_exists( 'pa_condition' ) ) {
+    $labels = array( 'excellent' => 'حالة ممتازة', 'good' => 'حالة جيدة', 'fair' => 'حالة مقبولة' );
+    $saved = get_post_meta( get_the_ID(), '_sq_item_condition', true );
+    if ( isset( $labels[ $saved ] ) ) {
+        echo '<span class="sq-product-condition">' . esc_html( $labels[ $saved ] ) . '</span>';
         return;
     }
-    $terms = get_the_terms( get_the_ID(), 'pa_condition' );
-    if ( $terms && ! is_wp_error( $terms ) ) {
-        echo '<span class="sq-product-condition">' . esc_html( $terms[0]->name ) . '</span>';
+    if ( taxonomy_exists( 'pa_condition' ) ) {
+        $terms = get_the_terms( get_the_ID(), 'pa_condition' );
+        if ( $terms && ! is_wp_error( $terms ) ) {
+            echo '<span class="sq-product-condition">' . esc_html( $terms[0]->name ) . '</span>';
+        }
     }
 }, 20 );
 
@@ -113,6 +118,13 @@ add_action( 'woocommerce_single_product_summary', function () {
             $facts[] = array( 'label' => 'الحالة', 'text' => $conditions[0]->name );
         }
     }
+    if ( ! array_filter( $facts, static function ( $fact ) { return 'الحالة' === $fact['label']; } ) ) {
+        $saved = get_post_meta( $product->get_id(), '_sq_item_condition', true );
+        $labels = array( 'excellent' => 'ممتازة', 'good' => 'جيدة', 'fair' => 'مقبولة' );
+        if ( isset( $labels[ $saved ] ) ) {
+            $facts[] = array( 'label' => 'الحالة', 'text' => $labels[ $saved ] );
+        }
+    }
     $categories = get_the_terms( $product->get_id(), 'product_cat' );
     if ( $categories && ! is_wp_error( $categories ) ) {
         foreach ( $categories as $category ) {
@@ -131,3 +143,17 @@ add_action( 'woocommerce_single_product_summary', function () {
     }
     echo '</dl>';
 }, 17 );
+
+/* A page with slug add-listing renders a moderated form; no public API is exposed. */
+require_once get_template_directory() . '/inc/listings.php';
+
+/* Add an entry to the existing primary menu only after the page exists. */
+add_filter( 'wp_nav_menu_items', function ( $items, $args ) {
+    if ( isset( $args->theme_location ) && 'primary' === $args->theme_location ) {
+        $page = get_page_by_path( 'add-listing' );
+        if ( $page && 'publish' === $page->post_status ) {
+            $items .= '<li class="menu-item sq-add-ad-item"><a href="' . esc_url( get_permalink( $page ) ) . '">أضف إعلانك</a></li>';
+        }
+    }
+    return $items;
+}, 10, 2 );
