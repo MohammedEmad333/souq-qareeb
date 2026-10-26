@@ -44,16 +44,17 @@ if ( $is_listing && taxonomy_exists( 'pa_condition' ) ) {
           <?php endforeach; ?>
         </select>
       </label>
-      <?php if ( $conditions ) : ?>
       <label class="sq-shop-filter-field" for="sq-listing-condition"><span>الحالة</span>
         <select id="sq-listing-condition" name="sq_condition">
           <option value="">كل الحالات</option>
+          <option value="excellent" <?php selected( $get_filter( 'sq_condition' ), 'excellent' ); ?>>ممتازة</option>
+          <option value="good" <?php selected( $get_filter( 'sq_condition' ), 'good' ); ?>>جيدة</option>
+          <option value="fair" <?php selected( $get_filter( 'sq_condition' ), 'fair' ); ?>>مقبولة</option>
           <?php foreach ( $conditions as $condition ) : ?>
-            <option value="<?php echo esc_attr( $condition->slug ); ?>" <?php selected( sanitize_title( $get_filter( 'sq_condition' ) ), $condition->slug ); ?>><?php echo esc_html( $condition->name ); ?></option>
+            <option value="<?php echo esc_attr( 'term-' . $condition->slug ); ?>" <?php selected( $get_filter( 'sq_condition' ), 'term-' . $condition->slug ); ?>><?php echo esc_html( $condition->name ); ?></option>
           <?php endforeach; ?>
         </select>
       </label>
-      <?php endif; ?>
       <label class="sq-shop-filter-field" for="sq-listing-min-price"><span>السعر من (<?php echo esc_html( get_woocommerce_currency_symbol() ); ?>)</span>
         <input type="number" id="sq-listing-min-price" name="min_price" min="0" step="0.01" inputmode="decimal" placeholder="0" value="<?php echo esc_attr( $get_filter( 'min_price' ) ); ?>">
       </label>
