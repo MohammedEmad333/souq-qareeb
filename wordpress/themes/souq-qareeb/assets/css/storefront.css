@@ -262,3 +262,74 @@ body.woocommerce-cart .wc-block-cart__empty-cart__title.with-empty-cart-icon{
 .sq-shop--listing .woocommerce ul.products{grid-template-columns:repeat(2,minmax(0,1fr))}
 .sq-shop--listing .woocommerce ul.products li.product .button{font-size:.7rem}
 }
+
+/* Approved mobile detail layout — uses the genuine WooCommerce product content. */
+.sq-shop--detail{max-width:1210px;padding-top:22px;padding-bottom:46px}
+.sq-shop--detail .woocommerce-breadcrumb{font-size:.83rem;line-height:1.8;color:#647980;margin:0 0 19px}
+.sq-shop--detail div.product{clear:both;display:flow-root}
+.sq-shop--detail .woocommerce div.product div.images,
+.sq-shop--detail div.product div.images{float:right;width:53%;margin:0 0 26px;position:relative}
+.sq-shop--detail .woocommerce div.product div.summary,
+.sq-shop--detail div.product div.summary{float:left;width:43%;margin:0 0 28px}
+.sq-shop--detail div.product div.images .woocommerce-product-gallery__wrapper{border-radius:18px;overflow:hidden;background:#fff;border:1px solid #e4eae7}
+.sq-shop--detail div.product div.images img{border-radius:14px;display:block;width:100%;height:auto;object-fit:contain}
+.sq-shop--detail div.product .flex-control-thumbs{display:flex;gap:10px;overflow-x:auto;list-style:none;margin:12px 0 0;padding:2px;scrollbar-width:thin}
+.sq-shop--detail div.product .flex-control-thumbs li{flex:0 0 22%;float:none!important;width:auto!important;min-width:70px}
+.sq-shop--detail div.product .flex-control-thumbs li img{aspect-ratio:1/1;object-fit:cover;border:2px solid transparent;border-radius:10px;opacity:.85}
+.sq-shop--detail div.product .flex-control-thumbs li img.flex-active{border-color:#169447;opacity:1}
+.sq-shop--detail div.product .summary{padding:clamp(18px,3vw,30px);border:1px solid #e3ebe5;border-radius:19px;background:#fff;box-shadow:0 12px 34px #0f2d3d0b}
+.sq-shop--detail div.product .summary .product_title{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:800;color:#0f2d3d;line-height:1.4;margin:0 0 11px}
+.sq-shop--detail div.product .summary .price{color:#07853a;font-size:clamp(1.5rem,3vw,2rem);font-weight:850;margin-bottom:10px}
+.sq-shop--detail div.product .summary .woocommerce-product-details__short-description{color:#425866;line-height:1.9;font-size:.96rem}
+.sq-single-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0;padding:0}
+.sq-single-facts>div{border:1px solid #e7eeeb;border-radius:11px;background:#f6fbf7;padding:10px 12px;min-width:0}
+.sq-single-facts dt{font-size:.76rem;color:#63757e}
+.sq-single-facts dd{margin:2px 0 0;font-size:.9rem;font-weight:750;color:#0f2d3d;overflow-wrap:anywhere}
+.sq-shop--detail .woocommerce div.product form.cart{margin:18px 0 12px;gap:9px}
+.sq-shop--detail div.product form.cart .quantity .qty{width:70px;min-height:47px;border:1px solid #cbd9d2}
+.sq-shop--detail div.product form.cart .single_add_to_cart_button{background:#0a853d!important;color:#fff!important;border-radius:10px;min-height:47px;padding-inline:22px}
+.sq-shop--detail div.product form.cart .single_add_to_cart_button:hover{background:#066b31!important}
+.sq-shop--detail div.product .product_meta{padding-top:15px;border-top:1px solid #e8efeb;font-size:.84rem;color:#5e717b}
+.sq-shop--detail div.product .product_meta a{color:#0d8740}
+.sq-shop--detail div.product .woocommerce-tabs{clear:both;padding-top:17px}
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs{padding:0;margin:0 0 14px;border:0;background:none;display:flex;gap:10px;flex-wrap:wrap}
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs::before,
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs::after{display:none}
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs li{background:#fff;border:1px solid #dfeae4;border-radius:10px;margin:0;padding:0}
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs li::before,
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs li::after{display:none}
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs li.active{border-color:#159647;background:#eaf8ee}
+.sq-shop--detail div.product .woocommerce-tabs ul.tabs li a{padding:9px 17px;color:#0f2d3d;font-weight:800}
+.sq-shop--detail div.product .woocommerce-tabs .panel{border:1px solid #e1eae5;border-radius:16px;background:#fff;padding:22px;color:#425866;line-height:1.9}
+.sq-shop--detail div.product .woocommerce-tabs .panel h2{color:#0f2d3d;font-size:1.3rem}
+.sq-shop--detail div.product .related{clear:both;padding-top:20px}
+.sq-shop--detail div.product .related>h2{font-size:1.55rem;color:#0f2d3d;margin:4px 0 18px}
+.sq-shop--detail .woocommerce ul.products li.product{position:relative}
+.sq-shop--detail .woocommerce ul.products li.product .button{background:#0a853d;color:#fff;border-color:#0a853d;font-weight:800}
+.sq-shop--detail .woocommerce ul.products li.product .button:hover{background:#076d32;color:#fff}
+@media(max-width:760px){
+.sq-shop--detail{padding-inline:12px;padding-top:12px;padding-bottom:34px}
+.sq-shop--detail .woocommerce-breadcrumb{font-size:.72rem;margin-bottom:10px}
+.sq-shop--detail .woocommerce div.product div.images,
+.sq-shop--detail div.product div.images,
+.sq-shop--detail .woocommerce div.product div.summary,
+.sq-shop--detail div.product div.summary{float:none!important;width:100%!important}
+.sq-shop--detail div.product div.images{margin-bottom:14px}
+.sq-shop--detail div.product div.images .woocommerce-product-gallery__wrapper{border-radius:15px}
+.sq-shop--detail div.product .flex-control-thumbs{gap:8px}
+.sq-shop--detail div.product .flex-control-thumbs li{flex-basis:24%;min-width:62px}
+.sq-shop--detail div.product .summary{border-radius:16px;padding:16px;margin-bottom:15px}
+.sq-shop--detail div.product .summary .product_title{font-size:1.55rem}
+.sq-shop--detail div.product .summary .price{font-size:1.7rem}
+.sq-shop--detail div.product .summary .woocommerce-product-details__short-description{font-size:.9rem}
+.sq-single-facts{gap:7px;margin:12px 0}
+.sq-single-facts>div{padding:9px}
+.sq-shop--detail div.product form.cart .single_add_to_cart_button{flex:1;min-height:47px}
+.sq-shop--detail div.product .woocommerce-tabs{padding-top:8px}
+.sq-shop--detail div.product .woocommerce-tabs .panel{padding:14px;border-radius:12px;font-size:.9rem}
+.sq-shop--detail div.product .related>h2{font-size:1.27rem}
+.sq-shop--detail .woocommerce ul.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sq-shop--detail .woocommerce ul.products li.product .woocommerce-loop-product__title{font-size:.83rem;padding-inline:9px}
+.sq-shop--detail .woocommerce ul.products li.product .button{min-height:40px;margin-inline:8px;font-size:.74rem;padding:8px 4px}
+.sq-shop--detail .woocommerce ul.products li.product .price{padding-inline:9px;font-size:.96rem}
+}
