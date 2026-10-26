@@ -8,6 +8,16 @@ get_header();
 $photo = get_template_directory() . '/assets/images/hero-mobile-image.webp';
 $categories = taxonomy_exists( 'product_cat' ) ? get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false, 'orderby' => 'name' ) ) : array();
 if ( is_wp_error( $categories ) ) { $categories = array(); }
+$edit_id = isset( $_GET['sq_edit'] ) && is_scalar( $_GET['sq_edit'] ) ? absint( wp_unslash( $_GET['sq_edit'] ) ) : 0;
+$editing = $edit_id && function_exists( 'sq_get_owned_editable_listing' ) ? sq_get_owned_editable_listing( $edit_id ) : false;
+$invalid_edit = $edit_id && ! $editing;
+$edit_type = $editing ? get_post_meta( $edit_id, '_sq_listing_type', true ) : '';
+$edit_cats = $editing ? $editing->get_category_ids() : array();
+$edit_category = $edit_cats ? (int) $edit_cats[0] : 0;
+$edit_condition = $editing ? get_post_meta( $edit_id, '_sq_item_condition', true ) : '';
+$edit_city = $editing ? get_post_meta( $edit_id, '_sq_item_city', true ) : '';
+$edit_contact = $editing ? get_post_meta( $edit_id, '_sq_contact_method', true ) : '';
+$edit_phone = $editing ? get_post_meta( $edit_id, '_sq_contact_phone', true ) : '';
 $status = isset( $_GET['sq_listing_status'] ) && is_scalar( $_GET['sq_listing_status'] )
     ? sanitize_key( wp_unslash( $_GET['sq_listing_status'] ) ) : '';
 $alerts = array(
@@ -21,10 +31,10 @@ $alerts = array(
 <main id="main" class="sq-container sq-create-listing" dir="rtl">
   <header class="sq-listing-header">
     <div>
-      <span>سوق قريب — إعلان جديد</span>
-      <h1>أضف إعلانك</h1>
-      <h2>أعطِ مقتنياتك حياة جديدة</h2>
-      <p>أدخل معلومات صحيحة وارفع صورًا واضحة. الإعلان يمر بالمراجعة قبل ظهوره للزوار.</p>
+      <span>سوق قريب — <?php echo $editing ? 'تعديل الإعلان' : 'إعلان جديد'; ?></span>
+      <h1><?php echo $editing ? 'تعديل إعلانك' : 'أضف إعلانك'; ?></h1>
+      <h2><?php echo $editing ? 'حدّث بيانات إعلانك' : 'أعطِ مقتنياتك حياة جديدة'; ?></h2>
+      <p><?php echo $editing ? 'بعد الحفظ، يُعاد الإعلان للمراجعة قبل ظهوره مرة أخرى، حتى لو كان منشورًا سابقًا.' : 'أدخل معلومات صحيحة وارفع صورًا واضحة. الإعلان يمر بالمراجعة قبل ظهوره للزوار.'; ?></p>
     </div>
     <?php if ( file_exists( $photo ) ) : ?>
       <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/hero-mobile-image.webp' ); ?>" alt="" width="340" height="210" loading="lazy">
@@ -33,7 +43,9 @@ $alerts = array(
   <?php if ( isset( $alerts[ $status ] ) ) : ?>
     <div class="sq-listing-alert <?php echo 'submitted' === $status ? 'sq-listing-alert--success' : ''; ?>" role="status"><?php echo esc_html( $alerts[ $status ] ); ?></div>
   <?php endif; ?>
-  <?php if ( ! is_user_logged_in() ) : ?>
+  <?php if ( $invalid_edit ) : ?>
+    <p class="sq-listing-alert" role="alert">لا يمكن عرض هذا الإعلان للتعديل. تأكد من تسجيل الدخول بالحساب الصحيح.</p>
+  <?php elseif ( ! is_user_logged_in() ) : ?>
     <section class="sq-listing-login">
       <h2>سجّل الدخول لإضافة إعلان</h2>
       <p>نحتاج إلى حسابك حتى نتمكن من ربط الإعلان بصاحبه ومراجعته قبل النشر.</p>
@@ -43,50 +55,62 @@ $alerts = array(
     <p class="sq-listing-alert">إنشاء الإعلانات غير متاح حاليًا.</p>
   <?php else : ?>
     <form class="sq-listing-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" enctype="multipart/form-data">
-      <input type="hidden" name="action" value="sq_submit_listing">
-      <?php wp_nonce_field( 'sq_submit_listing_action', 'sq_listing_nonce' ); ?>
+      <input type="hidden" name="action" value="<?php echo $editing ? 'sq_update_listing' : 'sq_submit_listing'; ?>">
+      <?php if ( $editing ) : ?>
+      <input type="hidden" name="sq_edit_id" value="<?php echo esc_attr( $edit_id ); ?>">
+      <?php endif; ?>
+      <?php wp_nonce_field( $editing ? 'sq_update_listing_' . $edit_id : 'sq_submit_listing_action', 'sq_listing_nonce' ); ?>
       <fieldset class="sq-listing-panel">
         <legend>نوع الإعلان</legend>
+        <?php if ( $editing ) : ?>
+        <p class="sq-listing-hint">نوع الإعلان الحالي: <strong><?php echo esc_html( array( 'sell' => 'بيع', 'swap' => 'تبديل', 'donate' => 'تبرّع' )[ $edit_type ] ); ?></strong>. تغيير نوع الإعلان غير متاح في هذه الدفعة.</p>
+        <?php else : ?>
         <div class="sq-listing-types">
           <label><input type="radio" name="sq_type" value="sell" checked required><span><strong>بيع</strong><small>أعرض منتجًا بسعر مناسب</small></span></label>
           <label><input type="radio" name="sq_type" value="swap"><span><strong>بدّل</strong><small>أعلن عن غرض للمبادلة</small></span></label>
           <label><input type="radio" name="sq_type" value="donate"><span><strong>تبرّع</strong><small>أمنح غرضي فرصة أخرى</small></span></label>
         </div>
         <p class="sq-listing-hint">إعلانات التبديل والتبرع تُحفظ بنوعها الصحيح، لكن التواصل بشأنها يتم مباشرة مع صاحب الإعلان بعد الموافقة، وليس عبر سلة الشراء.</p>
+        <?php endif; ?>
       </fieldset>
       <fieldset class="sq-listing-panel">
         <legend>صور المنتج</legend>
+        <?php if ( $editing ) : ?>
+        <div class="sq-listing-existing-photo"><?php echo $editing->get_image_id() ? wp_get_attachment_image( $editing->get_image_id(), 'thumbnail', false, array( 'alt' => 'صورة الإعلان الحالية' ) ) : ''; ?></div>
+        <p class="sq-listing-hint">صور الإعلان الحالية محفوظة كما هي. تغيير الصور غير متاح في هذه الدفعة.</p>
+        <?php else : ?>
         <label for="sq-listing-photos">اختر من صورة إلى خمس صور واضحة *</label>
         <input type="file" id="sq-listing-photos" name="sq_photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
         <p class="sq-listing-hint">JPG أو PNG أو WEBP — الحد الأقصى 5 ميجابايت للصورة.</p>
+        <?php endif; ?>
       </fieldset>
       <fieldset class="sq-listing-panel">
         <legend>معلومات المنتج</legend>
         <div class="sq-listing-fields">
-          <label class="sq-listing-field sq-listing-field--full" for="sq-listing-title"><span>عنوان المنتج *</span><input type="text" id="sq-listing-title" name="sq_name" minlength="5" maxlength="100" placeholder="مثال: مكتب خشبي مستعمل بحالة جيدة" required></label>
+          <label class="sq-listing-field sq-listing-field--full" for="sq-listing-title"><span>عنوان المنتج *</span><input type="text" id="sq-listing-title" name="sq_name" minlength="5" maxlength="100" value="<?php echo $editing ? esc_attr( $editing->get_name() ) : ''; ?>" placeholder="مثال: مكتب خشبي مستعمل بحالة جيدة" required></label>
           <label class="sq-listing-field" for="sq-listing-category"><span>التصنيف *</span>
             <select id="sq-listing-category" name="sq_category" required><option value="">اختر التصنيف</option>
             <?php foreach ( $categories as $cat ) : ?>
-              <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( $cat->name ); ?></option>
+              <option value="<?php echo esc_attr( $cat->term_id ); ?>" <?php selected( $edit_category, $cat->term_id ); ?>><?php echo esc_html( $cat->name ); ?></option>
             <?php endforeach; ?>
             </select>
           </label>
           <label class="sq-listing-field" for="sq-listing-condition"><span>الحالة *</span>
             <select id="sq-listing-condition" name="sq_condition" required>
               <option value="">اختر الحالة</option>
-              <option value="excellent">ممتازة</option>
-              <option value="good">جيدة</option>
-              <option value="fair">مقبولة</option>
+              <option value="excellent" <?php selected( $edit_condition, 'excellent' ); ?>>ممتازة</option>
+              <option value="good" <?php selected( $edit_condition, 'good' ); ?>>جيدة</option>
+              <option value="fair" <?php selected( $edit_condition, 'fair' ); ?>>مقبولة</option>
             </select>
           </label>
           <label class="sq-listing-field sq-listing-field--full" for="sq-listing-description"><span>وصف المنتج *</span>
-            <textarea id="sq-listing-description" name="sq_description" rows="5" minlength="15" maxlength="2000" placeholder="صف المنتج وحالته وأي ملاحظات مهمة..." required></textarea>
+            <textarea id="sq-listing-description" name="sq_description" rows="5" minlength="15" maxlength="2000" placeholder="صف المنتج وحالته وأي ملاحظات مهمة..." required><?php echo $editing ? esc_textarea( $editing->get_description() ) : ''; ?></textarea>
           </label>
           <label class="sq-listing-field" for="sq-listing-city"><span>المدينة أو المنطقة *</span>
-            <input type="text" id="sq-listing-city" name="sq_city" maxlength="60" placeholder="مثال: غزة" required>
+            <input type="text" id="sq-listing-city" name="sq_city" maxlength="60" value="<?php echo esc_attr( $edit_city ); ?>" placeholder="مثال: غزة" required>
           </label>
           <label class="sq-listing-field" for="sq-listing-price"><span>السعر للبيع (<?php echo esc_html( get_woocommerce_currency_symbol() ); ?>)</span>
-            <input type="number" id="sq-listing-price" name="sq_price" min="0" max="1000000" step="0.01" inputmode="decimal" placeholder="للبيع فقط">
+            <input type="number" id="sq-listing-price" name="sq_price" min="0" max="1000000" step="0.01" inputmode="decimal" value="<?php echo $editing && 'sell' === $edit_type ? esc_attr( $editing->get_regular_price() ) : ''; ?>" placeholder="للبيع فقط">
           </label>
         </div>
       </fieldset>
@@ -95,18 +119,18 @@ $alerts = array(
         <div class="sq-listing-fields">
           <label class="sq-listing-field" for="sq-listing-contact"><span>طريقة التواصل *</span>
             <select id="sq-listing-contact" name="sq_contact" required>
-              <option value="whatsapp">واتساب</option>
-              <option value="phone">اتصال هاتفي</option>
+              <option value="whatsapp" <?php selected( $edit_contact, 'whatsapp' ); ?>>واتساب</option>
+              <option value="phone" <?php selected( $edit_contact, 'phone' ); ?>>اتصال هاتفي</option>
             </select>
           </label>
           <label class="sq-listing-field" for="sq-listing-phone"><span>رقم التواصل الدولي *</span>
-            <input type="tel" id="sq-listing-phone" name="sq_phone" minlength="9" maxlength="20" placeholder="9705xxxxxxxx" required>
+            <input type="tel" id="sq-listing-phone" name="sq_phone" minlength="9" maxlength="20" value="<?php echo esc_attr( $edit_phone ); ?>" placeholder="9705xxxxxxxx" required>
           </label>
         </div>
         <p class="sq-listing-hint">بعد الموافقة على نشر إعلانك، يظهر للزائر زر تواصل يفتح رقمك في واتساب أو تطبيق الهاتف وفق اختيارك. لا ترسل معلومات لا تريد مشاركتها مع الآخرين.</p>
       </fieldset>
       <div class="sq-listing-submit">
-        <button type="submit" class="sq-button">إرسال الإعلان للمراجعة</button>
+        <button type="submit" class="sq-button"><?php echo $editing ? 'حفظ التعديلات وإرسالها للمراجعة' : 'إرسال الإعلان للمراجعة'; ?></button>
         <p>لن يُنشر الإعلان تلقائيًا. يمكنك متابعة قبول الإعلان مع إدارة الموقع.</p>
       </div>
     </form>
