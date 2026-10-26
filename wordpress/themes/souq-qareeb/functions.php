@@ -29,30 +29,28 @@ function souq_qareeb_apply_product_filters( $query ) {
     if ( is_admin() ) {
         return;
     }
-    $filters = array(
-        'sq_category' => 'product_cat',
-        'sq_condition' => 'pa_condition',
-    );
     $tax_query = (array) $query->get( 'tax_query' );
-    $added = false;
-
-    foreach ( $filters as $parameter => $taxonomy ) {
-        if ( ! taxonomy_exists( $taxonomy ) || ! isset( $_GET[ $parameter ] ) || ! is_scalar( $_GET[ $parameter ] ) ) {
-            continue;
+    if ( isset( $_GET['sq_category'] ) && is_scalar( $_GET['sq_category'] ) && taxonomy_exists( 'product_cat' ) ) {
+        $slug = sanitize_title( wp_unslash( $_GET['sq_category'] ) );
+        if ( $slug && term_exists( $slug, 'product_cat' ) ) {
+            $tax_query[] = array( 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => array( $slug ) );
+            $query->set( 'tax_query', $tax_query );
         }
-        $slug = sanitize_title( wp_unslash( $_GET[ $parameter ] ) );
-        if ( '' === $slug || ! term_exists( $slug, $taxonomy ) ) {
-            continue;
-        }
-        $tax_query[] = array(
-            'taxonomy' => $taxonomy,
-            'field'    => 'slug',
-            'terms'    => array( $slug ),
-        );
-        $added = true;
     }
-    if ( $added ) {
-        $query->set( 'tax_query', $tax_query );
+    if ( ! isset( $_GET['sq_condition'] ) || ! is_scalar( $_GET['sq_condition'] ) ) {
+        return;
+    }
+    $condition = sanitize_text_field( wp_unslash( $_GET['sq_condition'] ) );
+    if ( in_array( $condition, array( 'excellent', 'good', 'fair' ), true ) ) {
+        $meta_query = (array) $query->get( 'meta_query' );
+        $meta_query[] = array( 'key' => '_sq_item_condition', 'value' => $condition, 'compare' => '=' );
+        $query->set( 'meta_query', $meta_query );
+    } elseif ( 0 === strpos( $condition, 'term-' ) && taxonomy_exists( 'pa_condition' ) ) {
+        $term_slug = sanitize_title( substr( $condition, 5 ) );
+        if ( $term_slug && term_exists( $term_slug, 'pa_condition' ) ) {
+            $tax_query[] = array( 'taxonomy' => 'pa_condition', 'field' => 'slug', 'terms' => array( $term_slug ) );
+            $query->set( 'tax_query', $tax_query );
+        }
     }
 }
 add_action( 'woocommerce_product_query', 'souq_qareeb_apply_product_filters', 20 );
