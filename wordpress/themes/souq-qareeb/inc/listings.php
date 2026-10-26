@@ -39,12 +39,15 @@ add_action( 'admin_post_sq_submit_listing', function () {
     $method    = sq_listing_field( 'sq_contact' );
     $phone     = preg_replace( '/[^0-9]/', '', sq_listing_field( 'sq_phone' ) );
 
+    $length = static function ( $text ) {
+        return function_exists( 'mb_strlen' ) ? mb_strlen( $text, 'UTF-8' ) : strlen( $text );
+    };
     if ( ! in_array( $type, array( 'sell', 'swap', 'donate' ), true )
-         || mb_strlen( $name ) < 5 || mb_strlen( $name ) > 100
-         || mb_strlen( $content ) < 15 || mb_strlen( $content ) > 2000
+         || $length( $name ) < 5 || $length( $name ) > 100
+         || $length( $content ) < 15 || $length( $content ) > 2000
          || ! $category || ! term_exists( $category, 'product_cat' )
          || ! in_array( $condition, array( 'excellent', 'good', 'fair' ), true )
-         || '' === $city || mb_strlen( $city ) > 60
+         || '' === $city || $length( $city ) > 60
          || ! in_array( $method, array( 'whatsapp', 'phone' ), true )
          || strlen( $phone ) < 9 || strlen( $phone ) > 15 ) {
         wp_safe_redirect( sq_listing_return_url( 'invalid' ) );
@@ -72,6 +75,11 @@ add_action( 'admin_post_sq_submit_listing', function () {
         exit;
     }
     $photos = $_FILES['sq_photos'];
+    if ( ! is_array( $photos['error'] ) || ! is_array( $photos['size'] )
+         || ! is_array( $photos['tmp_name'] ) || ! is_array( $photos['type'] ) ) {
+        wp_safe_redirect( sq_listing_return_url( 'photos' ) );
+        exit;
+    }
     $valid_indices = array();
     foreach ( $photos['name'] as $i => $filename ) {
         if ( '' === $filename || UPLOAD_ERR_NO_FILE === (int) $photos['error'][ $i ] ) {
@@ -195,3 +203,17 @@ add_action( 'woocommerce_single_product_summary', function () {
         echo '<p class="sq-listing-contact"><a href="' . esc_url( 'tel:+' . $phone ) . '">اتصل بصاحب الإعلان</a></p>';
     }
 }, 22 );
+
+/* Use honest "تبديل" / "تبرع" labels for non-sale adverts. */
+add_filter( 'woocommerce_get_price_html', function ( $html, $product ) {
+    if ( $product ) {
+        $type = get_post_meta( $product->get_id(), '_sq_listing_type', true );
+        if ( 'swap' === $type ) {
+            return '<span class="sq-listing-special-price">للتبديل</span>';
+        }
+        if ( 'donate' === $type ) {
+            return '<span class="sq-listing-special-price">للتبرّع</span>';
+        }
+    }
+    return $html;
+}, 10, 2 );
