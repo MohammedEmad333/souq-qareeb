@@ -86,3 +86,48 @@ add_filter( 'woocommerce_show_page_title', function ( $show ) {
     }
     return $show;
 } );
+
+/* Product gallery behavior powered by WooCommerce's built-in scripts. */
+add_action( 'after_setup_theme', function () {
+    add_theme_support( 'wc-product-gallery-slider' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+    add_theme_support( 'wc-product-gallery-zoom' );
+}, 15 );
+
+/**
+ * Display product facts only when saved taxonomy terms actually exist.
+ * No invented seller ratings, locations, or item conditions.
+ */
+add_action( 'woocommerce_single_product_summary', function () {
+    if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+        return;
+    }
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+    $facts = array();
+    if ( taxonomy_exists( 'pa_condition' ) ) {
+        $conditions = get_the_terms( $product->get_id(), 'pa_condition' );
+        if ( $conditions && ! is_wp_error( $conditions ) ) {
+            $facts[] = array( 'label' => 'الحالة', 'text' => $conditions[0]->name );
+        }
+    }
+    $categories = get_the_terms( $product->get_id(), 'product_cat' );
+    if ( $categories && ! is_wp_error( $categories ) ) {
+        foreach ( $categories as $category ) {
+            if ( (int) $category->term_id !== (int) get_option( 'default_product_cat' ) ) {
+                $facts[] = array( 'label' => 'التصنيف', 'text' => $category->name );
+                break;
+            }
+        }
+    }
+    if ( ! $facts ) {
+        return;
+    }
+    echo '<dl class="sq-single-facts">';
+    foreach ( $facts as $fact ) {
+        echo '<div><dt>' . esc_html( $fact['label'] ) . '</dt><dd>' . esc_html( $fact['text'] ) . '</dd></div>';
+    }
+    echo '</dl>';
+}, 17 );
