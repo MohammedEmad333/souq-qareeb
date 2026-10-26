@@ -74,6 +74,11 @@ add_action( 'woocommerce_register_form_start', function () {
 } );
 
 add_filter( 'woocommerce_registration_errors', function ( $errors ) {
+    // Checkout registration has a separate field layout: never block it for
+    // lacking fields rendered only on the My Account form.
+    if ( ! function_exists( 'is_account_page' ) || ! is_account_page() ) {
+        return $errors;
+    }
     foreach ( array( 'sq_first_name' => 'الاسم الأول', 'sq_last_name' => 'اسم العائلة' ) as $key => $label ) {
         $value = isset( $_POST[ $key ] ) && is_scalar( $_POST[ $key ] )
             ? trim( sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) ) : '';
