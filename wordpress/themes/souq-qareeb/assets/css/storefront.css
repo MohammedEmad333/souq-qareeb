@@ -471,3 +471,26 @@ body.woocommerce-account .woocommerce form.register .woocommerce-form-register__
     }
     body.woocommerce-account .woocommerce #customer_login{gap:15px}
 }
+
+/* Customer listing editing: keep the current product photography in place. */
+.sq-owned-edit {
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:7px 10px;border:1px solid #b9dec7;background:#e3f8eb;
+    color:#0a7638;text-decoration:none;border-radius:9px;
+    font-size:.78rem;font-weight:800;line-height:1.6;
+}
+.sq-owned-edit:hover,.sq-owned-edit:focus-visible {
+    border-color:#0a7638;background:#d3f2df;color:#075c2b;
+}
+.sq-listing-existing-photo {
+    display:flex;justify-content:flex-start;align-items:center;
+    min-height:80px;padding:10px;background:#f6fcf8;
+    border:1px dashed #b7dbc4;border-radius:12px;
+}
+.sq-listing-existing-photo img{
+    display:block;width:125px;max-height:105px;height:auto;object-fit:contain;border-radius:9px;
+}
+@media(max-width:760px){
+    .sq-owned-edit{font-size:.72rem;padding:6px}
+    .sq-listing-existing-photo img{width:100px;max-height:90px}
+}

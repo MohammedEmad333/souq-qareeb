@@ -188,6 +188,10 @@ add_action( 'woocommerce_account_my-listings_endpoint', function () {
         echo '<h3>' . esc_html( get_the_title() ) . '</h3>';
         echo '<p>' . esc_html( isset( $types[ $type ] ) ? $types[ $type ] : '' ) . ( $city ? ' · ' . esc_html( $city ) : '' ) . '</p>';
         echo '<div class="sq-owned-actions">';
+        $edit_page = get_page_by_path( 'add-listing' );
+        if ( $edit_page && 'publish' === $edit_page->post_status && function_exists( 'sq_listing_edit_url' ) ) {
+            echo '<a class="sq-owned-edit" href="' . esc_url( sq_listing_edit_url( $id ) ) . '">تعديل الإعلان</a>';
+        }
         if ( 'publish' === $status ) {
             echo '<a class="sq-owned-view" href="' . esc_url( get_permalink( $id ) ) . '">عرض الإعلان</a>';
         }
@@ -241,7 +245,9 @@ add_action( 'admin_post_sq_withdraw_listing', function () {
 add_action( 'woocommerce_account_my-listings_endpoint', function () {
     $notice = isset( $_GET['sq_notice'] ) && is_scalar( $_GET['sq_notice'] )
         ? sanitize_key( wp_unslash( $_GET['sq_notice'] ) ) : '';
-    if ( 'withdrawn' === $notice ) {
+    if ( 'updated' === $notice ) {
+        wc_print_notice( 'حُفظت التعديلات وأُعيد إعلانك للمراجعة قبل النشر.', 'success' );
+    } elseif ( 'withdrawn' === $notice ) {
         wc_print_notice( 'تم سحب إعلانك ولن يظهر للزوار.', 'success' );
     } elseif ( 'failed' === $notice ) {
         wc_print_notice( 'تعذّر سحب الإعلان. حاول مرة أخرى.', 'error' );
