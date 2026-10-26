@@ -435,3 +435,39 @@ body.woocommerce-account .woocommerce .woocommerce-MyAccount-content{padding:13p
 .sq-owned-view,.sq-owned-withdraw{font-size:.72rem;padding:6px}
 }
 @media(prefers-reduced-motion:reduce){.sq-account-shortcut{transition:none}}
+
+/* Registration follow-up QA: readable Arabic privacy notice and mobile form spacing. */
+body.woocommerce-account .woocommerce form.register .woocommerce-privacy-policy-text{
+    direction:rtl;text-align:right;font-size:.86rem;line-height:1.9;color:#556d75;
+    padding:11px 13px;margin:8px 0 14px;background:#f6fbf8;
+    border:1px solid #e1ede5;border-radius:11px;
+}
+body.woocommerce-account .woocommerce form.register .woocommerce-privacy-policy-text p{margin:0;line-height:inherit}
+body.woocommerce-account .woocommerce form.register .woocommerce-privacy-policy-text a{
+    color:#0a8640;font-weight:800;text-underline-offset:3px;
+}
+body.woocommerce-account .woocommerce form.register .sq-register-name{
+    min-width:0;
+}
+body.woocommerce-account .woocommerce form.register .sq-register-name .input-text{
+    width:100%;max-width:100%;
+}
+body.woocommerce-account .woocommerce form.register .form-row-wide{clear:both}
+body.woocommerce-account .woocommerce form.register .woocommerce-form-register__submit{
+    min-width:180px;
+}
+@media(max-width:760px){
+    body.woocommerce-account .woocommerce form.register .woocommerce-privacy-policy-text{
+        padding:10px;font-size:.79rem;line-height:1.75;margin:6px 0 12px;
+    }
+    body.woocommerce-account .woocommerce form.register .form-row{
+        margin-bottom:11px;
+    }
+    body.woocommerce-account .woocommerce form.register .form-row label{
+        font-size:.89rem;line-height:1.65;margin-bottom:5px;
+    }
+    body.woocommerce-account .woocommerce form.register .woocommerce-form-register__submit{
+        width:100%;min-height:48px;margin-top:5px;
+    }
+    body.woocommerce-account .woocommerce #customer_login{gap:15px}
+}
