@@ -84,6 +84,7 @@ $alerts = array(
         <input type="file" id="sq-listing-photos" name="sq_photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
         <p class="sq-listing-hint">JPG أو PNG أو WEBP — الحد الأقصى 5 ميجابايت للصورة.</p>
         <p class="sq-listing-file-feedback" id="sq-listing-file-feedback" role="status" aria-live="polite">لم يتم اختيار صورة بعد.</p>
+        <div class="sq-listing-photo-previews" id="sq-listing-photo-previews" aria-label="معاينة الصور المختارة"></div>
         <?php endif; ?>
       </fieldset>
       <fieldset class="sq-listing-panel">
@@ -146,8 +147,16 @@ $alerts = array(
   const feedback = document.getElementById('sq-listing-file-feedback');
   const status = document.getElementById('sq-listing-submit-feedback');
   const submit = form.querySelector('button[type="submit"]');
+  const previews = document.getElementById('sq-listing-photo-previews');
+  let previewUrls = [];
+  function clearPreviews(){
+    previewUrls.forEach(function(url){URL.revokeObjectURL(url);});
+    previewUrls = [];
+    if (previews) previews.replaceChildren();
+  }
   if (file && feedback) {
     file.addEventListener('change', function(){
+      clearPreviews();
       const selected = Array.from(file.files || []);
       if (!selected.length) { feedback.textContent = 'لم يتم اختيار صورة بعد.'; return; }
       const tooLarge = selected.some(function(f){return f.size > 5*1024*1024;});
@@ -157,7 +166,18 @@ $alerts = array(
         feedback.textContent = file.validationMessage;
       } else {
         file.setCustomValidity('');
-        feedback.textContent = 'تم اختيار ' + selected.length + ' صورة. ستُرفع عند إرسال الإعلان.';
+        feedback.textContent = 'تم اختيار ' + selected.length + ' صورة. هذه معاينة محلية، وستُرفع الصور عند إرسال الإعلان.';
+        if (previews) {
+          selected.forEach(function(f, index){
+            const url = URL.createObjectURL(f);
+            previewUrls.push(url);
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = 'معاينة الصورة ' + (index + 1);
+            img.loading = 'lazy';
+            previews.appendChild(img);
+          });
+        }
       }
     });
   }
