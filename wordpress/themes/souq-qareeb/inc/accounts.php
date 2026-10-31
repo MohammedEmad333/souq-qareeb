@@ -245,7 +245,9 @@ add_action( 'admin_post_sq_withdraw_listing', function () {
 add_action( 'woocommerce_account_my-listings_endpoint', function () {
     $notice = isset( $_GET['sq_notice'] ) && is_scalar( $_GET['sq_notice'] )
         ? sanitize_key( wp_unslash( $_GET['sq_notice'] ) ) : '';
-    if ( 'updated' === $notice ) {
+    if ( 'submitted' === $notice ) {
+        wc_print_notice( 'تم استلام إعلانك بنجاح، وأُضيف إلى إعلاناتك بحالة بانتظار المراجعة. سنعرضه للزوار فقط بعد موافقة المشرف.', 'success' );
+    } elseif ( 'updated' === $notice ) {
         wc_print_notice( 'حُفظت التعديلات وأُعيد إعلانك للمراجعة قبل النشر.', 'success' );
     } elseif ( 'withdrawn' === $notice ) {
         wc_print_notice( 'تم سحب إعلانك ولن يظهر للزوار.', 'success' );
