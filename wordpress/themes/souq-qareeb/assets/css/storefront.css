@@ -494,3 +494,9 @@ body.woocommerce-account .woocommerce form.register .woocommerce-form-register__
     .sq-owned-edit{font-size:.72rem;padding:6px}
     .sq-listing-existing-photo img{width:100px;max-height:90px}
 }
+
+/* Selected image previews for marketplace listing form. */
+.sq-listing-photo-previews {display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:9px;margin-top:10px}
+.sq-listing-photo-previews:empty {display:none}
+.sq-listing-photo-previews img {display:block;width:100%;aspect-ratio:1;object-fit:cover;border:1px solid #c9e3d2;border-radius:11px;background:#f6faf7}
+.sq-listing-file-feedback {font-size:.82rem;color:#31744a;line-height:1.6;margin:9px 0 0}
