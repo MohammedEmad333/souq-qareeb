@@ -159,7 +159,12 @@ add_action( 'admin_post_sq_submit_listing', function () {
     $product->set_image_id( $image_ids[0] );
     $product->set_gallery_image_ids( array_slice( $image_ids, 1 ) );
     $product->save();
-    wp_safe_redirect( sq_listing_return_url( 'submitted' ) );
+    // Redirect to the account's My Listings view so success is visible
+    // alongside the newly pending product, rather than above a blank form.
+    $destination = function_exists( 'sq_account_listings_url' )
+        ? add_query_arg( 'sq_notice', 'submitted', sq_account_listings_url() )
+        : sq_listing_return_url( 'submitted' );
+    wp_safe_redirect( $destination );
     exit;
 } );
 
