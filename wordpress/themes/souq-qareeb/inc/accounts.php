@@ -115,6 +115,11 @@ add_action( 'woocommerce_account_dashboard', function () {
     }
     $user = wp_get_current_user();
     $add_page = get_page_by_path( 'add-listing' );
+    if ( current_user_can( 'edit_products' ) ) {
+        echo '<div class="sq-admin-account-entry" style="margin-bottom:18px;padding:16px;border:1px solid #bcdac7;background:#e9f8ef;border-radius:12px">';
+        echo '<strong>حساب الإدارة</strong><p>لإدارة الإعلانات والمراجعة، استخدم لوحة المدير المستقلة.</p>';
+        echo '<a class="sq-button" href="' . esc_url( admin_url( 'admin.php?page=sq-moderation' ) ) . '">فتح لوحة المدير</a></div>';
+    }
     $cards = array(
         array( 'label' => 'إعلاناتي', 'text' => 'شاهد إعلاناتك وحالة المراجعة.', 'url' => sq_account_listings_url(), 'icon' => '▤' ),
         array( 'label' => 'طلباتي', 'text' => 'راجع مشترياتك السابقة.', 'url' => wc_get_endpoint_url( 'orders', '', wc_get_page_permalink( 'myaccount' ) ), 'icon' => '▣' ),
