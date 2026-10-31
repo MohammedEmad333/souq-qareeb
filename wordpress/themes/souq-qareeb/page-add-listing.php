@@ -26,6 +26,7 @@ $alerts = array(
     'photos' => 'تعذّر رفع الصور. استخدم من صورة إلى خمس صور بصيغة JPG أو PNG أو WEBP، وبحد أقصى 5 ميجابايت للصورة.',
     'limit' => 'وصلت إلى الحد اليومي للإعلانات (خمسة إعلانات خلال 24 ساعة).',
     'unavailable' => 'تعذّر حفظ الإعلان حاليًا. حاول مجددًا لاحقًا.',
+    'too_large' => 'حجم البيانات المرسلة أكبر من الحد المسموح على السيرفر. حاول استخدام صورة أصغر.',
 );
 ?>
 <main id="main" class="sq-container sq-create-listing" dir="rtl">
@@ -54,7 +55,7 @@ $alerts = array(
   <?php elseif ( ! class_exists( 'WooCommerce' ) ) : ?>
     <p class="sq-listing-alert">إنشاء الإعلانات غير متاح حاليًا.</p>
   <?php else : ?>
-    <form class="sq-listing-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" enctype="multipart/form-data">
+    <form id="sq-listing-form" class="sq-listing-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" enctype="multipart/form-data">
       <input type="hidden" name="action" value="<?php echo $editing ? 'sq_update_listing' : 'sq_submit_listing'; ?>">
       <?php if ( $editing ) : ?>
       <input type="hidden" name="sq_edit_id" value="<?php echo esc_attr( $edit_id ); ?>">
@@ -82,6 +83,7 @@ $alerts = array(
         <label for="sq-listing-photos">اختر من صورة إلى خمس صور واضحة *</label>
         <input type="file" id="sq-listing-photos" name="sq_photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
         <p class="sq-listing-hint">JPG أو PNG أو WEBP — الحد الأقصى 5 ميجابايت للصورة.</p>
+        <p class="sq-listing-file-feedback" id="sq-listing-file-feedback" role="status" aria-live="polite">لم يتم اختيار صورة بعد.</p>
         <?php endif; ?>
       </fieldset>
       <fieldset class="sq-listing-panel">
@@ -131,9 +133,39 @@ $alerts = array(
       </fieldset>
       <div class="sq-listing-submit">
         <button type="submit" class="sq-button"><?php echo $editing ? 'حفظ التعديلات وإرسالها للمراجعة' : 'إرسال الإعلان للمراجعة'; ?></button>
-        <p>لن يُنشر الإعلان تلقائيًا. يمكنك متابعة قبول الإعلان مع إدارة الموقع.</p>
+        <p id="sq-listing-submit-feedback" role="status" aria-live="polite">لن يُنشر الإعلان تلقائيًا. يمكنك متابعة قبول الإعلان مع إدارة الموقع.</p>
       </div>
     </form>
   <?php endif; ?>
 </main>
+<script>
+(function(){
+  const form = document.getElementById('sq-listing-form');
+  if (!form) return;
+  const file = document.getElementById('sq-listing-photos');
+  const feedback = document.getElementById('sq-listing-file-feedback');
+  const status = document.getElementById('sq-listing-submit-feedback');
+  const submit = form.querySelector('button[type="submit"]');
+  if (file && feedback) {
+    file.addEventListener('change', function(){
+      const selected = Array.from(file.files || []);
+      if (!selected.length) { feedback.textContent = 'لم يتم اختيار صورة بعد.'; return; }
+      const tooLarge = selected.some(function(f){return f.size > 5*1024*1024;});
+      const invalidType = selected.some(function(f){return !['image/jpeg','image/png','image/webp'].includes(f.type);});
+      if (selected.length > 5 || tooLarge || invalidType) {
+        file.setCustomValidity('اختر من صورة إلى خمس صور JPG أو PNG أو WEBP، بحجم 5 ميجابايت كحد أقصى للصورة.');
+        feedback.textContent = file.validationMessage;
+      } else {
+        file.setCustomValidity('');
+        feedback.textContent = 'تم اختيار ' + selected.length + ' صورة. ستُرفع عند إرسال الإعلان.';
+      }
+    });
+  }
+  form.addEventListener('submit', function(event){
+    if (!form.reportValidity()) { event.preventDefault(); status.textContent = 'راجع الحقول المطلوبة أعلى الصفحة.'; return; }
+    if (submit) { submit.disabled = true; submit.textContent = 'جارٍ إرسال الإعلان والصور…'; }
+    if (status) status.textContent = 'جارٍ رفع البيانات. لا تغلق الصفحة حتى تظهر نتيجة الإرسال.';
+  });
+})();
+</script>
 <?php get_footer(); ?>
