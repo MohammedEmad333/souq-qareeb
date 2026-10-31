@@ -159,3 +159,6 @@ add_filter( 'wp_nav_menu_items', function ( $items, $args ) {
 
 /* One WooCommerce customer identity for browsing, purchases and community listings. */
 require_once get_template_directory() . '/inc/accounts.php';
+
+/* Branded, permission-checked admin interface for community advertisements. */
+require_once get_template_directory() . '/inc/admin-dashboard.php';

@@ -1,0 +1,25 @@
+/* Independent admin moderation screen, never applied to the public shop. */
+.sq-admin{font-family:Cairo,Tahoma,sans-serif;max-width:1350px;margin:20px 20px 25px 0;color:#0f2d3d}.sq-admin *{box-sizing:border-box}
+.sq-admin-hero{background:linear-gradient(110deg,#0f2d3d,#174b4d);color:#fff;border-radius:19px;padding:28px 26px;margin-bottom:17px}
+.sq-admin-hero>span{color:#91ebb3;font-size:13px;font-weight:700}.sq-admin-hero h1{font-size:clamp(24px,3vw,34px);margin:6px 0;color:#fff}.sq-admin-hero p{font-size:15px;color:#d2e6dd;margin:0 0 15px}
+.sq-admin-links,.sq-admin-tabs{display:flex;gap:9px;flex-wrap:wrap}.sq-admin-links a{border:1px solid #ffffff55;color:#fff;text-decoration:none;padding:8px 13px;border-radius:9px}.sq-admin-links a:hover{color:#0f2d3d;background:#fff}
+.sq-admin-tabs{margin:0 0 12px}.sq-admin-tabs a{background:#fff;color:#164031;border:1px solid #d9e9de;padding:10px 14px;border-radius:11px;text-decoration:none;font-weight:700}
+.sq-admin-tabs a.active{background:#0d8b43;color:#fff;border-color:#0d8b43}
+.sq-admin-count{font-size:14px;color:#526873;margin:13px 0 16px}
+.sq-admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.sq-admin-card{background:#fff;border:1px solid #dae7df;border-radius:16px;overflow:hidden;min-width:0;box-shadow:0 5px 18px #0f2d3d0c}
+.sq-admin-image{height:178px;background:#eef6f0}.sq-admin-image img{width:100%;height:100%;object-fit:cover;display:block}
+.sq-admin-card-body{padding:16px}.sq-admin-type{display:inline-block;background:#e2f6e9;color:#066f35;border-radius:99px;font-size:12px;padding:3px 10px;font-weight:700}
+.sq-admin-card h2{color:#0f2d3d;font-size:19px;line-height:1.6;margin:8px 0 12px}
+.sq-admin-card dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.sq-admin-card dl div{background:#f7fbf9;padding:8px;border-radius:9px;min-width:0}
+.sq-admin-card dt{color:#5d7179;font-size:12px}.sq-admin-card dd{color:#0f2d3d;font-size:13px;font-weight:700;overflow-wrap:anywhere;margin:4px 0 0}
+.sq-admin-description{line-height:1.8;color:#536972;font-size:13px}
+.sq-admin-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid #e3ede7}.sq-admin-actions form{margin:0}
+.sq-admin-actions a,.sq-admin-actions button{font:700 13px Cairo,Tahoma,sans-serif;padding:9px 11px;border-radius:9px;text-decoration:none;cursor:pointer;line-height:1.5}
+.sq-admin-actions a{background:#e9f0f4;border:1px solid #ccdae3;color:#0f2d3d}
+.sq-admin-actions button.sq-admin-approve{border:1px solid #07803d;background:#0c8c44;color:#fff}
+.sq-admin-actions button.sq-admin-reject{border:1px solid #e8d2c5;background:#fff4ec;color:#9b4127}
+.sq-admin-empty{background:#fff;border:1px dashed #bddeca;text-align:center;border-radius:15px;padding:45px;color:#486759}
+.sq-admin-pages{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}.sq-admin-pages a{padding:8px 13px;background:#fff;color:#0f2d3d;text-decoration:none;border-radius:8px;border:1px solid #d9e9df}.sq-admin-pages a[aria-current="page"]{color:#fff;background:#0c8b42}
+@media(max-width:1100px){.sq-admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:782px){.sq-admin{margin:10px 10px 20px 0}.sq-admin-hero{padding:20px 15px}.sq-admin-hero h1{font-size:25px}.sq-admin-grid{grid-template-columns:1fr}.sq-admin-image{height:190px}.sq-admin-tabs a{font-size:12px;padding:8px 10px}.sq-admin-card-body{padding:13px}.sq-admin-actions a,.sq-admin-actions button{font-size:12px}.sq-admin-hero p{font-size:13px}}
