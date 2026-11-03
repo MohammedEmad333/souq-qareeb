@@ -1,48 +1,117 @@
 <?php
 /**
  * Plugin Name: Souq Qareeb Demo Checkout Guard
- * Description: Blocks real orders during project development.
- * Version: 1.0.0
+ * Description: Allows manager-only Stripe sandbox checkout while blocking public and live-mode purchases.
+ * Version: 1.1.0
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit;
 
-// Block Checkout Block orders before WooCommerce processes them.
-add_filter('rest_pre_dispatch', function ($result, $server, $request) {
-    if (
-        $request->get_method() === 'POST'
-        && preg_match(
-            '#^/wc/store(?:/v[0-9]+)?/checkout/?$#',
-            $request->get_route()
-        )
-    ) {
-        return new WP_Error(
-            'souq_demo_checkout_disabled',
-            'المتجر تجريبي حاليًا ولا يستقبل طلبات شراء.',
-            ['status' => 403]
-        );
+/**
+ * Fail closed unless a logged-in shop manager uses the active Stripe gateway
+ * and WooCommerce's official Stripe plugin has test mode explicitly enabled.
+ * The Stripe account itself may still reject test payments (e.g. restricted test account).
+ */
+function souq_demo_checkout_test_ready() {
+    if ( ! is_user_logged_in() || ! current_user_can( 'manage_woocommerce' ) ) {
+        return false;
     }
 
-    return $result;
-}, 10, 3);
+    $settings = get_option( 'woocommerce_stripe_settings', array() );
+    if ( ! is_array( $settings )
+        || 'yes' !== ( $settings['enabled'] ?? '' )
+        || 'yes' !== ( $settings['testmode'] ?? '' ) ) {
+        return false;
+    }
 
-// Block traditional WooCommerce checkout as well.
-add_action('woocommerce_checkout_process', function () {
-    wc_add_notice(
-        'المتجر تجريبي حاليًا ولا يستقبل طلبات شراء.',
-        'error'
+    if ( ! function_exists( 'WC' ) || ! WC() || ! WC()->payment_gateways() ) {
+        return false;
+    }
+
+    $gateways = WC()->payment_gateways()->payment_gateways();
+    return is_array( $gateways )
+        && isset( $gateways['stripe'] )
+        && 'yes' === $gateways['stripe']->enabled;
+}
+
+function souq_demo_checkout_permitted( $gateway_id ) {
+    return 'stripe' === $gateway_id && souq_demo_checkout_test_ready();
+}
+
+function souq_demo_checkout_blocked_message() {
+    return 'المتجر تجريبي حاليًا. يُسمح بإتمام طلبات Stripe الاختبارية لحساب إدارة المتجر فقط، عند تفعيل Test Mode.';
+}
+
+/*
+ * Hide all payment gateways from visitors. Managers can see only the core
+ * "stripe" gateway while test mode is active. This also covers checkout blocks
+ * where supported by WooCommerce.
+ */
+add_filter( 'woocommerce_available_payment_gateways', function ( $gateways ) {
+    if ( is_admin() && ! wp_doing_ajax() ) {
+        return $gateways; // Do not interfere with admin payment settings.
+    }
+    if ( ! is_array( $gateways )
+        || ! souq_demo_checkout_test_ready()
+        || ! isset( $gateways['stripe'] ) ) {
+        return array();
+    }
+    return array( 'stripe' => $gateways['stripe'] );
+}, 999 );
+
+/*
+ * Protect both block checkout paths:
+ * POST /wc/store/v1/checkout and POST /wc/store/v1/checkout/{order_id}.
+ * A WP Store API nonce alone is not sufficient: require a manager and Stripe test mode.
+ * Never interfere with webhooks, GET requests or unrelated REST endpoints.
+ */
+add_filter( 'rest_pre_dispatch', function ( $result, $server, $request ) {
+    if ( null !== $result || ! $request instanceof WP_REST_Request
+        || 'POST' !== $request->get_method()
+        || ! preg_match( '#^/wc/store(?:/v[0-9]+)?/checkout(?:/[0-9]+)?/?$#', $request->get_route() ) ) {
+        return $result;
+    }
+
+    $payment_method = $request->get_param( 'payment_method' );
+    if ( is_string( $payment_method ) && souq_demo_checkout_permitted( $payment_method ) ) {
+        return $result;
+    }
+
+    return new WP_Error(
+        'souq_demo_checkout_disabled',
+        souq_demo_checkout_blocked_message(),
+        array( 'status' => 403 )
     );
-});
+}, 10, 3 );
 
-// Show a notice above the Checkout Block.
-add_filter('render_block', function ($content, $block) {
-    if (($block['blockName'] ?? '') !== 'woocommerce/checkout') {
+/* Classic checkout posts must pass the same Stripe-only sandbox gate. */
+add_action( 'woocommerce_checkout_process', function () {
+    $method = isset( $_POST['payment_method'] ) && is_scalar( $_POST['payment_method'] )
+        ? sanitize_key( wp_unslash( $_POST['payment_method'] ) ) : '';
+    if ( ! souq_demo_checkout_permitted( $method ) ) {
+        wc_add_notice( souq_demo_checkout_blocked_message(), 'error' );
+    }
+} );
+
+/* Existing order-pay links must not bypass the sandbox gate. */
+add_action( 'woocommerce_before_pay_action', function ( $order ) {
+    $method = isset( $_POST['payment_method'] ) && is_scalar( $_POST['payment_method'] )
+        ? sanitize_key( wp_unslash( $_POST['payment_method'] ) ) : '';
+    if ( ! souq_demo_checkout_permitted( $method ) ) {
+        wp_die( souq_demo_checkout_blocked_message(), '', array( 'response' => 403 ) );
+    }
+} );
+
+/* Clearly label the public checkout as a non-purchasable academic demo. */
+add_filter( 'render_block', function ( $content, $block ) {
+    if ( ( $block['blockName'] ?? '' ) !== 'woocommerce/checkout' ) {
         return $content;
     }
 
+    $notice = souq_demo_checkout_test_ready()
+        ? 'وضع اختبار Stripe نشط. يمكن لحساب الإدارة فقط تنفيذ طلب تجريبي؛ لا تستخدم بيانات بطاقة حقيقية.'
+        : 'هذا متجر تجريبي لمشروع جامعي، وإتمام الطلبات غير متاح للزوار.';
+
     return '<p style="padding:14px;border-radius:8px;background:#eef7f2;color:#176b55">'
-        . 'هذا متجر تجريبي لمشروع جامعي. إتمام الطلبات غير متاح حاليًا.'
-        . '</p>' . $content;
-}, 10, 2);
+        . esc_html( $notice ) . '</p>' . $content;
+}, 10, 2 );
