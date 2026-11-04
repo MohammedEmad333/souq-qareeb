@@ -1,18 +1,34 @@
-# Souq Qareeb custom storefront (initial scaffold)
+# قالب سوق قريب (Souq Qareeb)
 
-This classic WordPress theme is intentionally **not activated automatically**.
+قالب WordPress مخصص ومتجاوب يدعم RTL، ومتكامل مع WooCommerce. يوفّر واجهة المتجر والإعلانات ولوحة مراجعة مخصصة للمسؤول، بالاعتماد على بيانات WordPress الحقيقية.
 
-## Review and preview
+## الحالة الفعلية بتاريخ 4 نوفمبر 2026
 
-1. Back up the production MariaDB database and WordPress uploads before any activation.
-2. Copy `wordpress/themes/souq-qareeb/` into the persistent WordPress data volume at `/var/www/html/wp-content/themes/souq-qareeb/`. The current Compose mounts a **named volume**, not the repository's theme directory.
-3. Prefer testing on a staging WordPress instance first; in WP Admin → Appearance → Themes, preview/activate **Souq Qareeb** on staging.
-4. Check the home page, mobile RTL navigation, shop/catalog, product detail, cart, checkout, My Account, login, and saved WordPress pages.
-5. Assign a menu to **Primary navigation** in Appearance → Menus. WooCommerce must remain active to render the featured product grid.
-6. Roll back by reactivating the previous theme; restore from backups only when needed.
+**منفذ في المصدر الحالي**: الصفحة الرئيسية، البحث وتصنيفات المتجر، إنشاء إعلانات بيع/تبديل/تبرع بمراجعة، «إعلاناتي» داخل حساب WooCommerce، تعديل الحقول الأساسية للإعلان مع إعادته للمراجعة، سحب الإعلان، ولوحة المسؤول للقبول والرفض. لا توجد مراسلة داخلية أو مفضلة مخصصة.
 
-No migration of theme editor templates or global styles occurs here. Existing `wp_template`, `wp_navigation`, and `wp_global_styles` records are preserved. Custom features (listing types, regions, swap/donation flows) require a dedicated plugin and are **not yet implemented**.
+**قيود تعديل الإعلان**: لا يتيح نموذج التعديل حاليًا تغيير الصور أو نوع الإعلان. الإعلانات المنشورة عند تعديلها تعود إلى `pending`. يعتمد تمييز إعلانات سوق قريب على `_sq_listing_type`.
 
-## Development status
+## التثبيت الآمن
 
-Initial RTL storefront scaffold, not a production-ready replacement. Follow-up work: product card styling, storefront search/filter UX, footer navigation, accessibility and WooCommerce integration checks.
+1. جهّز WordPress وWooCommerce بنسخة احتياطية صالحة، ويفضل معاينة التغييرات على بيئة اختبار.
+2. انسخ محتويات `wordpress/themes/souq-qareeb/` إلى `wp-content/themes/souq-qareeb/` داخل حجم WordPress الدائم. ملف Compose يستخدم **named volume** وليس مجلد المصدر مباشرة.
+3. انسخ إضافات `wordpress/mu-plugins/*.php` المطلوبة إلى `wp-content/mu-plugins/`. **لا تعطّل `souq-demo-checkout.php` في الإنتاج**.
+4. تأكد من وجود صور الهوية المعتمدة تحت `assets/images/`، فهي غير مرفقة حاليًا في المستودع. التفاصيل: [جرد الأصول](../../../docs/BRAND_ASSETS_AR.md).
+5. فعّل القالب، وأنشئ صفحات WooCommerce واربط خيارات Shop وCart وCheckout وMy Account، وأنشئ صفحة عامة بالاسم المختصر `add-listing`.
+6. اختر قائمة **Primary navigation** من «المظهر ← القوائم»؛ القالب يضيف رابط «أضف إعلانك» إلى هذه القائمة عند وجود صفحته.
+7. احفظ الروابط الدائمة مرة واحدة لتسجيل endpoint `my-account/my-listings`.
+8. اضبط العملة والسعر واللغة حسب متطلبات المشروع، واختبر الحساب والمتجر ورفع الصور والحماية قبل إطلاق الموقع.
+
+## ملفات مهمة
+
+- `front-page.php`: الصفحة الرئيسية وبيانات المنتجات/التصنيفات الديناميكية.
+- `inc/listings.php`, `page-add-listing.php`: استقبال إعلانات المستخدمين بعد التحقق من المدخلات والصور.
+- `inc/listing-edit.php`, `inc/accounts.php`: تعديل إعلان المالك وإعلاناتي وحساب WooCommerce.
+- `inc/admin-dashboard.php`: مراجعة الإعلانات وصلاحيات الإدارة.
+- `assets/css/storefront.css`: تصميم الواجهات.
+
+## الفحص والاسترجاع
+
+نفّذ `php -l` لملفات PHP ثم اختبر الصفحة الرئيسية، المتجر، التفاصيل، السلة، الحساب، التقديم، حالة `pending`، الموافقة، التعديل/السحب، وعرض الزائر. احتفظ بنسخة من القالب والصور وقاعدة البيانات قبل الاستبدال. يمكن استرجاع القالب من النسخة السابقة؛ استرجاع البيانات يحتاج نسخة قاعدة بيانات صحيحة.
+
+للاختبارات المرحلية انظر [سجل الجودة](../../../docs/QA_EVIDENCE_AR.md) و[سيناريو العرض](../../../docs/DEMO_SCRIPT_AR.md).
