@@ -34,19 +34,12 @@ bash scripts/production-readonly-audit.sh
 - واجهة الهاتف: تحتاج لقطات أو فحص بصري في المتصفح على شاشات متعددة.
 - Stripe: عدم إظهار مفاتيحه أو تنفيذ الدفع لا يعني فشل البوابة؛ يُستند إلى الاختبار السابق أو يعاد الاختبار في وضع Sandbox فقط.
 
-## 4) إغلاق بند صور الهوية
+## 4) صور الهوية — بند GitHub مكتمل
 
-صور القالب الأصلية **موجودة بالفعل لدى صاحب المشروع في نسخة LocalWP**، لكنها ليست ضمن Git. على جهاز Omarchy:
+أُضيفت الصور الأصلية الخمس إلى `main` في [PR #45](https://github.com/MohammedEmad333/souq-qareeb/pull/45) بعد مطابقة SHA-256 مع صور الإنتاج. لا حاجة إلى رفع نسخ جديدة من Omarchy أو Oracle.
 
-```bash
-cd ~/souq-qareeb-source
-git pull --ff-only origin main
-bash scripts/collect-brand-assets.sh \
-  "$HOME/Local Sites/souq-qareeb-review/app/public/wp-content/themes/souq-qareeb/assets/images"
-git status --short
-```
+**عند إعادة النشر فقط:** انسخ مجلد `wordpress/themes/souq-qareeb/` متضمنًا `assets/images/` إلى حجم WordPress الفعلي، لأن `git pull` في مجلد المصدر لا يحدث تلقائيًا ملفات حاوية الإنتاج. تحقق من الصور بصريًا بعد النشر.
 
-لا ترفع أي صور مصدرها `wp-content/uploads` أو مستخدمون دون إذن. بعد فحص الصور والمصدر، أنشئ فرعًا مستقلًا وPR لإدراج الأصول المعتمدة.
 
 ## 5) فحص البريد النهائي يدويًا
 

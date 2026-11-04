@@ -13,7 +13,7 @@
 1. جهّز WordPress وWooCommerce بنسخة احتياطية صالحة، ويفضل معاينة التغييرات على بيئة اختبار.
 2. انسخ محتويات `wordpress/themes/souq-qareeb/` إلى `wp-content/themes/souq-qareeb/` داخل حجم WordPress الدائم. ملف Compose يستخدم **named volume** وليس مجلد المصدر مباشرة.
 3. انسخ إضافات `wordpress/mu-plugins/*.php` المطلوبة إلى `wp-content/mu-plugins/`. **لا تعطّل `souq-demo-checkout.php` في الإنتاج**.
-4. تأكد من وجود صور الهوية المعتمدة تحت `assets/images/`، فهي غير مرفقة حاليًا في المستودع. التفاصيل: [جرد الأصول](../../../docs/BRAND_ASSETS_AR.md).
+4. تأكد من نشر صور الهوية الخمس الموجودة في المستودع تحت `assets/images/` مع ملفات القالب داخل حجم WordPress الدائم. أُضيفت الأصول عبر [PR #45](https://github.com/MohammedEmad333/souq-qareeb/pull/45). التفاصيل: [جرد الأصول](../../../docs/BRAND_ASSETS_AR.md).
 5. فعّل القالب، وأنشئ صفحات WooCommerce واربط خيارات Shop وCart وCheckout وMy Account، وأنشئ صفحة عامة بالاسم المختصر `add-listing`.
 6. اختر قائمة **Primary navigation** من «المظهر ← القوائم»؛ القالب يضيف رابط «أضف إعلانك» إلى هذه القائمة عند وجود صفحته.
 7. احفظ الروابط الدائمة مرة واحدة لتسجيل endpoint `my-account/my-listings`.
