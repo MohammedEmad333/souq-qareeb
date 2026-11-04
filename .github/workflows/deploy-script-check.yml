@@ -19,4 +19,4 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Validate Bash syntax
-        run: bash -n scripts/deploy-mu-plugins.sh
+        run: |\n          bash -n scripts/deploy-mu-plugins.sh\n          bash -n scripts/production-readonly-audit.sh\n          bash -n scripts/collect-brand-assets.sh\n          bash scripts/production-readonly-audit.sh --help >/dev/null
