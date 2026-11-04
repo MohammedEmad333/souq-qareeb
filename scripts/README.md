@@ -29,3 +29,14 @@ bash scripts/deploy-mu-plugins.sh --rollback /home/ubuntu/souq-qareeb/deploy-bac
 - This is **not transactional**. PHP runtime errors, application behaviour, web traffic during file replacement, and filesystem permission changes may require manual rollback. Always test the live site afterward, including the demo checkout guard; keep original backups.
 - Never commit credentials, `.env`, database dumps, actual uploads, backups or SSH private keys.
 - Do not run `docker compose up` solely as part of updating these plugins. Existing WordPress and database Docker volumes are left untouched.
+
+## Read-only pre-submission audit
+
+Run on the Oracle host:
+
+```bash
+cd ~/souq-qareeb/source
+bash scripts/production-readonly-audit.sh
+```
+
+The audit checks container state, public page and theme-image HTTP statuses, WordPress/WooCommerce test-mode flags, and **backup inventory only**. It never sends mail, creates orders, restores backups or modifies application data. See [دليل الفحص النهائي](../docs/PRODUCTION_FINAL_CHECK_AR.md). A visible backup file or a mail plugin does not prove successful restore or email delivery.
