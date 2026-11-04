@@ -12,11 +12,15 @@ permissions:
 
 jobs:
   bash-syntax:
-    name: Validate deployment shell script
+    name: Validate deployment shell scripts
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Validate Bash syntax
-        run: |\n          bash -n scripts/deploy-mu-plugins.sh\n          bash -n scripts/production-readonly-audit.sh\n          bash -n scripts/collect-brand-assets.sh\n          bash scripts/production-readonly-audit.sh --help >/dev/null
+      - name: Validate Bash syntax and help
+        run: |
+          bash -n scripts/deploy-mu-plugins.sh
+          bash -n scripts/production-readonly-audit.sh
+          bash -n scripts/collect-brand-assets.sh
+          bash scripts/production-readonly-audit.sh --help >/dev/null
