@@ -6,7 +6,7 @@
 define( 'ABSPATH', '/' );
 $GLOBALS['sq_hooks'] = array();
 $GLOBALS['sq_user_logged_in'] = true;
-$GLOBALS['sq_manager'] = true;
+$GLOBALS['sq_manager'] = false;
 $GLOBALS['sq_settings'] = array( 'enabled' => 'yes', 'testmode' => 'yes' );
 $GLOBALS['sq_gateways'] = array(
     'stripe' => (object) array( 'enabled' => 'yes' ),
@@ -61,10 +61,10 @@ function sq_expect( $condition, $label ) {
     echo "PASS: {$label}\\n";
 }
 
-sq_expect( souq_demo_checkout_permitted( 'stripe' ), 'manager + enabled Stripe test mode allowed' );
+sq_expect( souq_demo_checkout_permitted( 'stripe' ), 'customer + enabled Stripe test mode allowed' );
 sq_expect( ! souq_demo_checkout_permitted( 'stripe_link' ), 'Stripe Link not permitted as separate gateway' );
 $available = $GLOBALS['sq_hooks']['woocommerce_available_payment_gateways']( $GLOBALS['sq_gateways'] );
-sq_expect( array_keys( $available ) === array( 'stripe' ), 'only Stripe gateway appears for manager' );
+sq_expect( array_keys( $available ) === array( 'stripe' ), 'only Stripe gateway appears for signed-in customer' );
 
 $rest = $GLOBALS['sq_hooks']['rest_pre_dispatch'];
 $endpoint = new WP_REST_Request( 'POST', '/wc/store/v1/checkout', array( 'payment_method' => 'stripe' ) );
@@ -79,12 +79,21 @@ sq_expect( null === $rest( null, null, new WP_REST_Request( 'GET', '/wc/store/v1
 $GLOBALS['sq_user_logged_in'] = false;
 sq_expect( ! souq_demo_checkout_permitted( 'stripe' ), 'guests denied' );
 sq_expect( $rest( null, null, $endpoint ) instanceof WP_Error, 'guest Store API POST denied' );
+$_POST['payment_method'] = 'stripe';
+$GLOBALS['sq_hooks']['woocommerce_checkout_process']();
+sq_expect( count( $GLOBALS['sq_notices'] ) > 0, 'guest classic checkout denied' );
+$GLOBALS['sq_notices'] = array();
 sq_expect( array() === $GLOBALS['sq_hooks']['woocommerce_available_payment_gateways']( $GLOBALS['sq_gateways'] ), 'guest cannot see gateways' );
 $GLOBALS['sq_user_logged_in'] = true;
 
-$GLOBALS['sq_manager'] = false;
-sq_expect( ! souq_demo_checkout_permitted( 'stripe' ), 'customer denied' );
+sq_expect( souq_demo_checkout_permitted( 'stripe' ), 'customer without manager capability allowed' );
+sq_expect( null === $rest( null, null, $endpoint ), 'customer Store API POST allowed' );
+$_POST['payment_method'] = 'stripe';
+$GLOBALS['sq_hooks']['woocommerce_checkout_process']();
+sq_expect( 0 === count( $GLOBALS['sq_notices'] ), 'customer classic Stripe checkout allowed' );
 $GLOBALS['sq_manager'] = true;
+sq_expect( souq_demo_checkout_permitted( 'stripe' ), 'shop manager remains allowed' );
+$GLOBALS['sq_manager'] = false;
 $GLOBALS['sq_settings']['testmode'] = 'no';
 sq_expect( ! souq_demo_checkout_permitted( 'stripe' ), 'live mode blocked automatically' );
 sq_expect( $rest( null, null, $endpoint ) instanceof WP_Error, 'live-mode block checkout POST denied' );

@@ -1,19 +1,19 @@
 <?php
 /**
  * Plugin Name: Souq Qareeb Demo Checkout Guard
- * Description: Allows manager-only Stripe sandbox checkout while blocking public and live-mode purchases.
- * Version: 1.1.0
+ * Description: Allows Stripe sandbox checkout for signed-in customers and managers; blocks guests and live payments.
+ * Version: 1.2.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Fail closed unless a logged-in shop manager uses the active Stripe gateway
+ * Fail closed unless a logged-in account uses the active Stripe gateway
  * and WooCommerce's official Stripe plugin has test mode explicitly enabled.
  * The Stripe account itself may still reject test payments (e.g. restricted test account).
  */
 function souq_demo_checkout_test_ready() {
-    if ( ! is_user_logged_in() || ! current_user_can( 'manage_woocommerce' ) ) {
+    if ( ! is_user_logged_in() ) {
         return false;
     }
 
@@ -39,11 +39,11 @@ function souq_demo_checkout_permitted( $gateway_id ) {
 }
 
 function souq_demo_checkout_blocked_message() {
-    return 'المتجر تجريبي حاليًا. يُسمح بإتمام طلبات Stripe الاختبارية لحساب إدارة المتجر فقط، عند تفعيل Test Mode.';
+    return 'المتجر تجريبي حاليًا. يُسمح بإتمام طلبات Stripe الاختبارية للحسابات المسجلة فقط، عند تفعيل Test Mode.';
 }
 
 /*
- * Hide all payment gateways from visitors. Managers can see only the core
+ * Hide all payment gateways from guests. Signed-in accounts can see only the core
  * "stripe" gateway while test mode is active. This also covers checkout blocks
  * where supported by WooCommerce.
  */
@@ -62,7 +62,7 @@ add_filter( 'woocommerce_available_payment_gateways', function ( $gateways ) {
 /*
  * Protect both block checkout paths:
  * POST /wc/store/v1/checkout and POST /wc/store/v1/checkout/{order_id}.
- * A WP Store API nonce alone is not sufficient: require a manager and Stripe test mode.
+ * A WP Store API nonce alone is not sufficient: require sign-in and Stripe test mode.
  * Never interfere with webhooks, GET requests or unrelated REST endpoints.
  */
 add_filter( 'rest_pre_dispatch', function ( $result, $server, $request ) {
@@ -109,8 +109,8 @@ add_filter( 'render_block', function ( $content, $block ) {
     }
 
     $notice = souq_demo_checkout_test_ready()
-        ? 'وضع اختبار Stripe نشط. يمكن لحساب الإدارة فقط تنفيذ طلب تجريبي؛ لا تستخدم بيانات بطاقة حقيقية.'
-        : 'هذا متجر تجريبي لمشروع جامعي، وإتمام الطلبات غير متاح للزوار.';
+        ? 'وضع اختبار Stripe نشط للحسابات المسجلة. لا تستخدم بيانات بطاقة حقيقية؛ لن يتم تحصيل أموال.'
+        : 'الدفع غير متاح حاليًا. يلزم تسجيل الدخول وتفعيل Stripe في وضع الاختبار.';
 
     return '<p style="padding:14px;border-radius:8px;background:#eef7f2;color:#176b55">'
         . esc_html( $notice ) . '</p>' . $content;
