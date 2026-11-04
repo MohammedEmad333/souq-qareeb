@@ -1,0 +1,73 @@
+# سجل فحص «سوق قريب» — 4 نوفمبر 2026
+
+يُميز هذا السجل بين **الفحص المثبت** و**المطلوب تنفيذه**. مصدر أدلة التشغيل اليدوية: نتائج أمر الطرفية والصور التي قدّمها صاحب المشروع؛ مصدر فحوصات البناء: GitHub Actions للإصدار الحالي.
+
+## أ. الفحوصات المثبتة
+
+| المعرف | البيئة | الاختبار | النتيجة | حدود الاستدلال |
+| --- | --- | --- | --- | --- |
+| L-01 | LocalWP | تسجيل دخول Customer وفتح الحساب | ناجح | حساب تجريبي محلي فقط |
+| L-02 | LocalWP | تقديم إعلان مع صورة وانتقاله إلى pending | ناجح | لا يثبت مقاومة الهجمات |
+| L-03 | LocalWP | ظهور الإعلان في لوحة المدير والموافقة عليه | ناجح | جرى الاختبار يدويًا |
+| L-04 | LocalWP | ظهور الإعلان المنشور في نافذة زائر خفي | ناجح | على localhost |
+| L-05 | LocalWP | السلة ونموذج checkout بسعر منتج 50 ₪ | ناجح | **لا توجد بوابة دفع محلية**؛ لم يتم دفع |
+| P-01 | إنتاج Oracle | WordPress وMariaDB قيد التشغيل | ناجح | `Up 4 days` و`Up 5 days` وقت الفحص |
+| P-02 | إنتاج Oracle | GET ست صفحات عامة | ناجح | جميعها HTTP 200؛ لا يفحص محتوى الصفحة |
+| P-03 | إنتاج Oracle (اختبار سابق) | Stripe Sandbox بمدير | ناجح سابقًا | دفع اختباري فقط؛ لا تدل Webhooks HTTP 200 وحدها على كل معالجة |
+| G-01 | GitHub main | CI عند commit `455a5dead1d5` | ناجح | ستة workflows؛ ليست اختبارات E2E متصفح |
+
+### نتائج HTTP التي قدمها صاحب خادم Oracle
+
+```text
+souq-qareeb-wordpress-1   Up 4 days
+souq-qareeb-database-1    Up 5 days
+/               HTTP 200
+/shop/          HTTP 200
+/cart/          HTTP 200
+/checkout/      HTTP 200
+/my-account/    HTTP 200
+/add-listing/   HTTP 200
+```
+
+### فحوصات GitHub Actions الناجحة لإصدار 3 نوفمبر 2026
+
+- Docker Compose checks — https://github.com/MohammedEmad333/souq-qareeb/actions/runs/41686079258
+- Deployment script checks — https://github.com/MohammedEmad333/souq-qareeb/actions/runs/41686079390
+- Theme backup tooling checks — https://github.com/MohammedEmad333/souq-qareeb/actions/runs/41686079415
+- PHP syntax checks — https://github.com/MohammedEmad333/souq-qareeb/actions/runs/41686079280
+- Block theme snapshot checks — https://github.com/MohammedEmad333/souq-qareeb/actions/runs/41686079460
+- Theme publishing tool checks — https://github.com/MohammedEmad333/souq-qareeb/actions/runs/41686079540
+
+## ب. الفحوصات غير المثبتة بعد
+
+| المعرف | الفحص | معيار القبول |
+| --- | --- | --- |
+| A-01 | البريد وإعادة تعيين كلمة المرور على الإنتاج | وصول الرسالة وإتمام الاستعادة بنجاح |
+| A-02 | تعارض ملكية الإعلانات | لا يمكن لعميل ثانٍ تعديل إعلان الأول، حتى بطلب مباشر |
+| A-03 | حدود المرفقات والطلب | الرفض الصحيح للملفات غير المسموحة/الكبيرة/المتكررة |
+| A-04 | صور الهوية في نشر جديد | جميع الأصول الحقيقية تظهر بعد نسخها من مصدر موثوق |
+| A-05 | الهاتف وRTL واللغات | لا تداخل أو تجاوز، ونصوص WooCommerce المناسبة بالعربية |
+| A-06 | نسخة احتياطية قابلة للاسترجاع | استعادة ناجحة في staging فقط |
+| A-07 | المسارات العامة للدفع | Customer والضيف لا يستطيعان إتمام طلب، والمدير يُسمح له فقط بوضع Stripe التجريبي |
+| A-08 | اختبار بصري حديث للإنتاج | صور موثقة للرئيسية والمتجر والتفاصيل والحساب والسلة |
+
+## ج. نتائج يجب تفسيرها بحذر
+
+- `HTTP 200` يؤكد استجابة الرابط، **لا** يضمن خلو الصفحة من خطأ PHP مرئي أو سلامة العمليات.
+- رمز Webhook `200` يؤكد تسلّم HTTP، لا يشكّل وحده دليلًا قاطعًا على نجاح جميع أحداث Stripe؛ حالة الطلب المدفوع توفر دليلًا إضافيًا.
+- نجحت محاكاة دورة الإعلانات على LocalWP، لكنها ليست اختبار قبول آليًا للإنتاج.
+- صور الشعار والواجهة المستعادة لدى صاحب المشروع لم تُرفق بالمستودع حتى وقت إعداد هذه الوثيقة.
+- مراجعة بصرية مباشرة للموقع المنشور من بيئة إعداد هذا التقرير **لم تتوفر**؛ لا تدّعِ اكتمالها.
+
+## د. أمر إتاحة آمن قابل للتكرار
+
+```bash
+docker ps --filter name=souq-qareeb --format 'table {{.Names}}\t{{.Status}}'
+for path in / /shop/ /cart/ /checkout/ /my-account/ /add-listing/; do
+  printf '%-20s ' "$path"
+  curl -sS -L --connect-timeout 5 --max-time 20 -o /dev/null \
+    -w 'HTTP %{http_code}\n' "https://souq.edubridge.win$path"
+done
+```
+
+لا تنشر مخرجات تحوي مفاتيح الطلبات، أرقام هواتف العملاء، أو بيانات فواتير حقيقية.
