@@ -9,7 +9,17 @@
     <?php endwhile; ?>
     <?php the_posts_pagination(); ?>
 <?php else : ?>
-    <h1><?php esc_html_e( 'Nothing found', 'souq-qareeb' ); ?></h1>
+    <section class="sq-panel sq-empty-state">
+      <?php if ( is_404() ) : ?>
+        <h1>الصفحة غير موجودة</h1>
+        <p>قد يكون الرابط قد تغيّر أو أُزيلت الصفحة.</p>
+      <?php else : ?>
+        <h1>لا توجد نتائج</h1>
+        <p>جرّب البحث بكلمات أخرى أو تصفّح المنتجات المتاحة.</p>
+      <?php endif; ?>
+      <?php $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ); ?>
+      <a class="sq-button" href="<?php echo esc_url( $shop_url ); ?>">تصفّح المنتجات</a>
+    </section>
 <?php endif; ?>
 </main>
 <?php get_footer(); ?>
