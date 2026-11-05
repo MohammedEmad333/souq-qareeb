@@ -523,3 +523,29 @@ body.woocommerce-account .woocommerce .password-input .input-text {
     padding-inline: 8px;
   }
 }
+
+@media (max-width: 430px) {
+  .sq-main .wc-block-cart__main table.wc-block-cart-items {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .sq-main .wc-block-cart__main table.wc-block-cart-items .wc-block-cart-items__row {
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .sq-main .wc-block-cart__main table.wc-block-cart-items .wc-block-cart-item__image {
+    padding-inline-end: 0;
+  }
+
+  .sq-main .wc-block-cart__main table.wc-block-cart-items .wc-block-cart-item__product,
+  .sq-main .wc-block-cart__main table.wc-block-cart-items .wc-block-cart-item__total {
+    grid-column: 2;
+  }
+
+  .sq-main .wc-block-cart__main table.wc-block-cart-items .wc-block-cart-item__total {
+    grid-row: 2;
+    padding-block-start: 6px;
+  }
+}
