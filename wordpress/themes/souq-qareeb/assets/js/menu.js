@@ -19,6 +19,9 @@
       toggle.focus();
     }
   });
+  document.addEventListener('focusin', (event) => {
+    if (!nav.contains(event.target) && event.target !== toggle) close();
+  });
   document.addEventListener('click', (event) => {
     if (!nav.contains(event.target) && !toggle.contains(event.target)) close();
   });

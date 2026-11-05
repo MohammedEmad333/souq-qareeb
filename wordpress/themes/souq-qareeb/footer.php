@@ -14,7 +14,7 @@ $footer_logo_exists = file_exists( get_template_directory() . '/assets/images/lo
     <div class="sq-footer-about">
       <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="sq-footer-brand" aria-label="سوق قريب - الرئيسية">
         <?php if ( $footer_logo_exists ) : ?>
-          <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-header.png' ); ?>" alt="سوق قريب" width="160" height="83" loading="lazy">
+          <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-header.png' ); ?>" alt="سوق قريب" width="418" height="277" loading="lazy">
         <?php else : ?>
           <strong><?php echo esc_html( get_bloginfo( 'name' ) ?: 'سوق قريب' ); ?></strong>
         <?php endif; ?>
