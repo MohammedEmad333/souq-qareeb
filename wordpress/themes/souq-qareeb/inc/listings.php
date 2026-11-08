@@ -20,6 +20,20 @@ function sq_listing_return_url( $status ) {
     return add_query_arg( 'sq_listing_status', $status, $url );
 }
 
+/**
+ * A community sale listing represents one unique second-hand item.
+ * WooCommerce can reduce its stock after checkout, preventing repeat sales.
+ * Swap and donation listings remain non-purchasable without tracked stock.
+ */
+function sq_configure_listing_inventory( $product, $type ) {
+    $product->set_sold_individually( true );
+    if ( 'sell' === $type ) {
+        $product->set_manage_stock( true );
+        $product->set_stock_quantity( 1 );
+        $product->set_backorders( 'no' );
+    }
+}
+
 /** Called only from an authenticated admin-post submission. */
 add_action( 'admin_post_sq_submit_listing', function () {
     if ( ! is_user_logged_in() || ! current_user_can( 'read' ) || ! class_exists( 'WC_Product_Simple' ) ) {
@@ -111,7 +125,7 @@ add_action( 'admin_post_sq_submit_listing', function () {
         $product->set_catalog_visibility( 'visible' );
         $product->set_category_ids( array( $category ) );
         $product->set_regular_price( 'sell' === $type ? wc_format_decimal( $price ) : '0' );
-        $product->set_sold_individually( true );
+        sq_configure_listing_inventory( $product, $type );
         $product_id = $product->save();
     } catch ( Exception $e ) {
         wp_safe_redirect( sq_listing_return_url( 'unavailable' ) );
