@@ -6,12 +6,12 @@ The Souq Qareeb theme and the complete tracked `wordpress/mu-plugins/` directory
 
 ## Launch (on the project server)
 
-Use a **separate worktree** for this branch; never switch the production checkout:
+Use a **separate detached worktree from the current main branch**; never switch or modify the production checkout. The detached worktree avoids depending on a feature branch that may be deleted after its PR is merged:
 
 ```bash
 cd ~/souq-qareeb
-git fetch origin
-git worktree add ../souq-qareeb-staging fix/staging-mu-plugins-and-qa
+git fetch origin main
+git worktree add --detach ../souq-qareeb-staging origin/main
 cd ../souq-qareeb-staging
 umask 077
 cat > .env.staging <<'EOF'
@@ -26,6 +26,17 @@ docker compose --env-file .env.staging -p souq-qareeb-staging -f compose.staging
 ```
 
 Replace both placeholder passwords with independent, randomly generated secrets. Do not commit `.env.staging`. The workflow validates the Compose definition and asserts that the theme and MU plugins are mounted read-only, the staging port is loopback-only, and staging uses its own named volumes.
+
+To refresh the staging source after changes are merged to `main`, stop the staging stack first, then update only its detached worktree:
+
+```bash
+cd ~/souq-qareeb-staging
+docker compose --env-file .env.staging -p souq-qareeb-staging -f compose.staging.yaml down
+git fetch origin main
+git checkout --detach origin/main
+python3 scripts/test-staging-isolation.py
+docker compose --env-file .env.staging -p souq-qareeb-staging -f compose.staging.yaml up -d
+```
 
 To reach the non-public staging from a laptop, use SSH forwarding (change the host to your server):
 
