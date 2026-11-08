@@ -266,14 +266,18 @@ add_action( 'woocommerce_account_my-listings_endpoint', function () {
  * any merchant-customized privacy text and the actual privacy-policy link.
  */
 add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
-    if ( 'registration' !== $type || ! is_string( $text ) ) {
+    if ( ! in_array( $type, array( 'registration', 'checkout' ), true ) || ! is_string( $text ) ) {
         return $text;
     }
 
-    $english_default = 'Your personal data will be used to support your experience throughout this website';
+    $english_default = 'checkout' === $type
+        ? 'Your personal data will be used to process your order, support your experience throughout this website'
+        : 'Your personal data will be used to support your experience throughout this website';
     if ( false === strpos( $text, $english_default ) ) {
         return $text;
     }
 
-    return 'سنستخدم بياناتك الشخصية لتوفير خدمات سوق قريب وإدارة الوصول إلى حسابك، وللأغراض الأخرى الموضّحة في [privacy_policy].';
+    return 'checkout' === $type
+        ? 'سنستخدم بياناتك الشخصية لمعالجة طلبك وتوفير خدمات سوق قريب، وللأغراض الأخرى الموضّحة في [privacy_policy].'
+        : 'سنستخدم بياناتك الشخصية لتوفير خدمات سوق قريب وإدارة الوصول إلى حسابك، وللأغراض الأخرى الموضّحة في [privacy_policy].';
 }, 20, 2 );
