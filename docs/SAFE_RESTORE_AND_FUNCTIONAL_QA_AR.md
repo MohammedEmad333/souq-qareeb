@@ -49,7 +49,7 @@ docker compose --env-file .env.staging -p souq-qareeb-staging -f compose.staging
 ابدأ بعرض أسماء الملفات وأحجامها وتواريخها فقط:
 
 ```bash
-find ~/souq-qareeb/deploy-backups -maxdepth 2 -type f -printf '%TY-%Tm-%Td %TH:%TM %s %p\\n' | sort
+find ~/souq-qareeb/deploy-backups -maxdepth 2 -type f -printf '%TY-%Tm-%Td %TH:%TM %s %p\n' | sort
 ```
 
 افحص نوع كل مرشح وبصمته، ولا تفك الضغط فوق مجلدات الإنتاج:
