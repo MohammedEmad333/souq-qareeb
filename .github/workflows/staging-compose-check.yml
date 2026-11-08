@@ -5,18 +5,25 @@ on:
       - 'compose.staging.yaml'
       - '.github/workflows/staging-compose-check.yml'
       - 'scripts/STAGING_STOREFRONT.md'
+      - 'scripts/test-staging-isolation.py'
+      - 'wordpress/mu-plugins/**'
   push:
     branches: [main]
     paths:
       - 'compose.staging.yaml'
       - '.github/workflows/staging-compose-check.yml'
+      - 'scripts/test-staging-isolation.py'
+      - 'wordpress/mu-plugins/**'
 permissions:
   contents: read
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - name: Verify staging isolation and plugin mounts
+        run: python3 scripts/test-staging-isolation.py
       - name: Validate staging Compose
         env:
           STAGING_DB_PASSWORD: dummy-ci-only

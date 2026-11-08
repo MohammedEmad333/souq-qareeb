@@ -39,6 +39,8 @@ services:
     volumes:
       - wp_staging:/var/www/html
       - ./wordpress/themes/souq-qareeb:/var/www/html/wp-content/themes/souq-qareeb:ro
+      # Load the exact tracked MU plugins in staging; never share production files.
+      - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
       - staging_internal
 
