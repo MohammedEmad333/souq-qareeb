@@ -90,7 +90,7 @@ if ( taxonomy_exists( 'product_cat' ) ) {
       <h2 id="sq-home-cats-heading">الأقسام الشائعة</h2>
       <a href="<?php echo esc_url( $shop_url ); ?>">عرض جميع الأقسام <span aria-hidden="true">←</span></a>
     </div>
-    <div class="sq-home-categories" role="list">
+    <div class="sq-home-categories">
       <?php foreach ( $categories as $category ) :
         $thumb_id = (int) get_term_meta( $category->term_id, 'thumbnail_id', true );
         if ( ! $thumb_id && function_exists( 'wc_get_products' ) ) {
@@ -105,7 +105,7 @@ if ( taxonomy_exists( 'product_cat' ) ) {
             continue;
         }
       ?>
-      <a class="sq-home-category" role="listitem" href="<?php echo esc_url( $term_url ); ?>">
+      <a class="sq-home-category" href="<?php echo esc_url( $term_url ); ?>">
         <?php if ( $thumb_id ) : ?>
           <?php echo wp_get_attachment_image( $thumb_id, 'thumbnail', false, array( 'class' => 'sq-home-category-thumb', 'alt' => '', 'loading' => 'lazy' ) ); ?>
         <?php else : ?>
