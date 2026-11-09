@@ -23,6 +23,9 @@ function sq_browser_qa_expect( $condition, $message ) {
 function sq_browser_qa_page( $key, $slug, $shortcode ) {
     $id = (int) get_option( 'woocommerce_' . $key . '_page_id', 0 );
     if ( $id && 'publish' === get_post_status( $id ) ) {
+        // WooCommerce installs Cart/Checkout blocks by default. Use server-rendered
+        // classic shortcodes for a deterministic browser check without JS bundles.
+        wp_update_post( array( 'ID' => $id, 'post_content' => $shortcode ) );
         return $id;
     }
     $id = wp_insert_post( array(
