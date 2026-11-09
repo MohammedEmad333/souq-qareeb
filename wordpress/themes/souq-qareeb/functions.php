@@ -7,6 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once get_template_directory() . '/inc/catalog-filters.php';
+require_once get_template_directory() . '/inc/checkout-i18n.php';
 
 add_action( 'after_setup_theme', function () {
     load_theme_textdomain( 'souq-qareeb', get_template_directory() . '/languages' );

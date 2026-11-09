@@ -1,0 +1,42 @@
+{
+  "environment": "Disposable loopback WordPress + WooCommerce + official Stripe 11.1.1 PHP checkbox renderer; standalone fixture, not a full checkout or Stripe.js test",
+  "measurements": [
+    {
+      "checked": false,
+      "label": "حفظ بيانات الدفع في حسابي لاستخدامها في عمليات الشراء القادمة.",
+      "rtl": "rtl",
+      "scrollWidth": 375,
+      "width": 375
+    },
+    {
+      "checked": false,
+      "label": "حفظ بيانات الدفع في حسابي لاستخدامها في عمليات الشراء القادمة.",
+      "rtl": "rtl",
+      "scrollWidth": 431,
+      "width": 431
+    },
+    {
+      "checked": false,
+      "label": "حفظ بيانات الدفع في حسابي لاستخدامها في عمليات الشراء القادمة.",
+      "rtl": "rtl",
+      "scrollWidth": 768,
+      "width": 768
+    },
+    {
+      "checked": false,
+      "label": "حفظ بيانات الدفع في حسابي لاستخدامها في عمليات الشراء القادمة.",
+      "rtl": "rtl",
+      "scrollWidth": 1366,
+      "width": 1366
+    },
+    {
+      "checked": false,
+      "label": "حفظ بيانات الدفع في حسابي لاستخدامها في عمليات الشراء القادمة.",
+      "rtl": "rtl",
+      "scrollWidth": 1921,
+      "width": 1921
+    }
+  ],
+  "initialChecked": false,
+  "toggleAndResetPassed": true
+}

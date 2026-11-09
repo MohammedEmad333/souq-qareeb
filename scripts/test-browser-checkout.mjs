@@ -5,6 +5,7 @@
 import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { mkdirSync } from 'node:fs';
 
 const root = process.env.QA_SITE_ROOT;
 const productURL = process.env.QA_PRODUCT_URL;
@@ -27,6 +28,25 @@ const buyerB = await browser.newContext();
 const pageA = await buyerA.newPage();
 const pageB = await buyerB.newPage();
 try {
+  // Real Stripe PHP renderer in a static, isolated fixture: no payment provider request.
+  await pageA.goto(new URL('/sq-stripe-copy-qa.html', root).toString());
+  const translated = 'حفظ بيانات الدفع في حسابي لاستخدامها في عمليات الشراء القادمة.';
+  const save = pageA.getByRole('checkbox', { name: translated, exact: true });
+  assert.equal(await save.isChecked(), false, 'Saving must remain opt-in');
+  await save.check();
+  assert.equal(await save.isChecked(), true, 'Translated label stays associated with the checkbox');
+  await save.uncheck();
+  assert.equal(await save.isChecked(), false);
+  mkdirSync('stripe-copy-evidence', { recursive: true });
+  for (const width of [375, 430, 768, 1366, 1920]) {
+    await pageA.setViewportSize({ width, height: 900 });
+    assert.equal(await save.isVisible(), true);
+    const overflow = await pageA.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+    assert.equal(overflow, false, 'Arabic save-card label must fit the viewport');
+    await pageA.screenshot({ path: `stripe-copy-evidence/stripe-copy-${width}.png` });
+  }
+  console.log('PASS: real Stripe checkbox Arabic label, opt-in, association and 5 viewports');
+
   // Anonymous user sees the live-rendered WordPress product and can add it to cart.
   await pageA.goto(productURL, { waitUntil: 'domcontentloaded' });
   await assert.doesNotReject(() => pageA.getByText('QA Unique Item - Browser Test').first().waitFor({ timeout: 12000 }));

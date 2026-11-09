@@ -5,12 +5,16 @@ on:
     paths:
       - 'scripts/qa-browser-fixtures.php'
       - 'scripts/test-browser-checkout.mjs'
+      - 'scripts/qa-stripe-checkout-copy.php'
+      - 'wordpress/themes/souq-qareeb/inc/checkout-i18n.php'
       - '.github/workflows/woocommerce-browser-smoke.yml'
   push:
     branches: [main]
     paths:
       - 'scripts/qa-browser-fixtures.php'
       - 'scripts/test-browser-checkout.mjs'
+      - 'scripts/qa-stripe-checkout-copy.php'
+      - 'wordpress/themes/souq-qareeb/inc/checkout-i18n.php'
       - '.github/workflows/woocommerce-browser-smoke.yml'
   workflow_dispatch:
 
@@ -59,12 +63,19 @@ jobs:
           wp config create --path="$QA_WP_PATH" --dbhost=127.0.0.1:3306 --dbname=souq_browser_qa --dbuser=souq_browser_qa --dbpass=disposable_ci_password --quiet
           wp core install --path="$QA_WP_PATH" --url=http://127.0.0.1:8096 --title="Disposable Souq browser QA" --admin_user=qa_admin --admin_password="disposable-ci-admin-only" --admin_email=qa-admin@example.invalid --skip-email --quiet
           wp plugin install woocommerce --activate --path="$QA_WP_PATH" --quiet
+          wp plugin install woocommerce-gateway-stripe --version=11.1.1 --activate --path="$QA_WP_PATH" --quiet
           cp -R wordpress/themes/souq-qareeb "$QA_WP_PATH/wp-content/themes/souq-qareeb"
           cp -R wordpress/mu-plugins/. "$QA_WP_PATH/wp-content/mu-plugins/"
           wp theme activate souq-qareeb --path="$QA_WP_PATH" --quiet
           php -l scripts/qa-browser-fixtures.php
+          wp eval-file "$GITHUB_WORKSPACE/scripts/qa-stripe-checkout-copy.php" --path="$QA_WP_PATH" > "$QA_WP_PATH/sq-stripe-copy-qa.html"
           SQ_QA_PHASE=prepare wp eval-file "$GITHUB_WORKSPACE/scripts/qa-browser-fixtures.php" --path="$QA_WP_PATH"
-          php -S 127.0.0.1:8096 -t "$QA_WP_PATH" "$QA_WP_PATH/index.php" > "$RUNNER_TEMP/souq-browser-php.log" 2>&1 &
+          cat > "$QA_WP_PATH/qa-router.php" <<'PHP'
+          <?php
+          if ( is_file( __DIR__ . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ) ) { return false; }
+          require __DIR__ . '/index.php';
+          PHP
+          php -S 127.0.0.1:8096 -t "$QA_WP_PATH" "$QA_WP_PATH/qa-router.php" > "$RUNNER_TEMP/souq-browser-php.log" 2>&1 &
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:8096/ -o /dev/null; then break; fi
             sleep 1
@@ -76,3 +87,11 @@ jobs:
           npm install --no-save --no-package-lock playwright@1.58.2
           npx playwright install --with-deps chromium
           node scripts/test-browser-checkout.mjs
+
+      - name: Upload Stripe copy screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stripe-copy-browser-evidence
+          path: stripe-copy-evidence/
+          if-no-files-found: ignore
