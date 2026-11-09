@@ -1,0 +1,45 @@
+{
+  "environment": "disposable loopback WordPress and WooCommerce, synthetic owner account",
+  "noPhotosSavePassed": true,
+  "twoReplacementUploadsPassed": true,
+  "originalMediaRetained": true,
+  "stockRemainedZero": true,
+  "returnedToModeration": true,
+  "metrics": [
+    {
+      "dir": "rtl",
+      "images": 2,
+      "required": false,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "dir": "rtl",
+      "images": 2,
+      "required": false,
+      "scrollWidth": 415,
+      "width": 431
+    },
+    {
+      "dir": "rtl",
+      "images": 2,
+      "required": false,
+      "scrollWidth": 753,
+      "width": 768
+    },
+    {
+      "dir": "rtl",
+      "images": 2,
+      "required": false,
+      "scrollWidth": 1351,
+      "width": 1366
+    },
+    {
+      "dir": "rtl",
+      "images": 2,
+      "required": false,
+      "scrollWidth": 1905,
+      "width": 1921
+    }
+  ]
+}

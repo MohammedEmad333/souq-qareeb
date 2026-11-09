@@ -6,6 +6,11 @@ on:
       - 'scripts/qa-browser-fixtures.php'
       - 'scripts/test-browser-checkout.mjs'
       - 'scripts/qa-stripe-checkout-copy.php'
+      - 'scripts/qa-listing-photo-fixture.php'
+      - 'scripts/test-listing-photo-edit.mjs'
+      - 'wordpress/themes/souq-qareeb/inc/listing-photos.php'
+      - 'wordpress/themes/souq-qareeb/inc/listing-edit.php'
+      - 'wordpress/themes/souq-qareeb/page-add-listing.php'
       - 'wordpress/themes/souq-qareeb/inc/checkout-i18n.php'
       - '.github/workflows/woocommerce-browser-smoke.yml'
   push:
@@ -14,6 +19,11 @@ on:
       - 'scripts/qa-browser-fixtures.php'
       - 'scripts/test-browser-checkout.mjs'
       - 'scripts/qa-stripe-checkout-copy.php'
+      - 'scripts/qa-listing-photo-fixture.php'
+      - 'scripts/test-listing-photo-edit.mjs'
+      - 'wordpress/themes/souq-qareeb/inc/listing-photos.php'
+      - 'wordpress/themes/souq-qareeb/inc/listing-edit.php'
+      - 'wordpress/themes/souq-qareeb/page-add-listing.php'
       - 'wordpress/themes/souq-qareeb/inc/checkout-i18n.php'
       - '.github/workflows/woocommerce-browser-smoke.yml'
   workflow_dispatch:
@@ -62,6 +72,7 @@ jobs:
           wp core download --path="$QA_WP_PATH" --quiet
           wp config create --path="$QA_WP_PATH" --dbhost=127.0.0.1:3306 --dbname=souq_browser_qa --dbuser=souq_browser_qa --dbpass=disposable_ci_password --quiet
           wp core install --path="$QA_WP_PATH" --url=http://127.0.0.1:8096 --title="Disposable Souq browser QA" --admin_user=qa_admin --admin_password="disposable-ci-admin-only" --admin_email=qa-admin@example.invalid --skip-email --quiet
+          wp language core install ar --activate --path="$QA_WP_PATH" --quiet
           wp plugin install woocommerce --activate --path="$QA_WP_PATH" --quiet
           wp plugin install woocommerce-gateway-stripe --version=11.1.1 --activate --path="$QA_WP_PATH" --quiet
           cp -R wordpress/themes/souq-qareeb "$QA_WP_PATH/wp-content/themes/souq-qareeb"
@@ -70,6 +81,8 @@ jobs:
           php -l scripts/qa-browser-fixtures.php
           wp eval-file "$GITHUB_WORKSPACE/scripts/qa-stripe-checkout-copy.php" --path="$QA_WP_PATH" > "$QA_WP_PATH/sq-stripe-copy-qa.html"
           SQ_QA_PHASE=prepare wp eval-file "$GITHUB_WORKSPACE/scripts/qa-browser-fixtures.php" --path="$QA_WP_PATH"
+          echo "QA_PHOTO_SCRIPT=$GITHUB_WORKSPACE/scripts/qa-listing-photo-fixture.php" >> "$GITHUB_ENV"
+          wp eval-file "$GITHUB_WORKSPACE/scripts/qa-listing-photo-fixture.php" --path="$QA_WP_PATH"
           cat > "$QA_WP_PATH/qa-router.php" <<'PHP'
           <?php
           if ( is_file( __DIR__ . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ) ) { return false; }
@@ -87,11 +100,14 @@ jobs:
           npm install --no-save --no-package-lock playwright@1.58.2
           npx playwright install --with-deps chromium
           node scripts/test-browser-checkout.mjs
+          node scripts/test-listing-photo-edit.mjs
 
       - name: Upload Stripe copy screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: stripe-copy-browser-evidence
-          path: stripe-copy-evidence/
+          path: |
+            stripe-copy-evidence/
+            listing-photo-evidence/
           if-no-files-found: ignore

@@ -1,8 +1,8 @@
 <?php
 /**
  * Owner-only editing of community adverts.
- * Every change re-enters moderation; existing images and listing type are
- * retained until dedicated photo/type-editing flows are implemented.
+ * Every change re-enters moderation. Photos are retained unless replacements
+ * are uploaded; listing type and stock remain unchanged.
  */
 defined( 'ABSPATH' ) || exit;
 
@@ -87,6 +87,16 @@ add_action( 'admin_post_sq_update_listing', function () {
         exit;
     }
 
+    $photo_files = sq_listing_replacement_photos( $_FILES['sq_photos'] ?? null );
+    if ( is_wp_error( $photo_files ) ) {
+        wp_safe_redirect( sq_listing_edit_url( $id, 'photos' ) );
+        exit;
+    }
+    $photo_ids = sq_upload_listing_replacement_photos( $photo_files, $id );
+    if ( is_wp_error( $photo_ids ) ) {
+        wp_safe_redirect( sq_listing_edit_url( $id, 'photos' ) );
+        exit;
+    }
     // Status is changed in the same save as the product fields, so publishing
     // cannot remain active when a seller modifies approved information.
     try {
@@ -95,8 +105,13 @@ add_action( 'admin_post_sq_update_listing', function () {
         $product->set_description( $description );
         $product->set_category_ids( array( $category ) );
         $product->set_regular_price( 'sell' === $type ? wc_format_decimal( $price_raw ) : '0' );
+        if ( $photo_ids ) {
+            $product->set_image_id( $photo_ids[0] );
+            $product->set_gallery_image_ids( array_slice( $photo_ids, 1 ) );
+        }
         $product->save();
     } catch ( Exception $e ) {
+        sq_cleanup_failed_listing_photo_save( $photo_ids, $id );
         wp_safe_redirect( sq_listing_edit_url( $id, 'unavailable' ) );
         exit;
     }

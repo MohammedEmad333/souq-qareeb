@@ -78,15 +78,18 @@ $alerts = array(
       <fieldset class="sq-listing-panel">
         <legend>صور المنتج</legend>
         <?php if ( $editing ) : ?>
-        <div class="sq-listing-existing-photo"><?php echo $editing->get_image_id() ? wp_get_attachment_image( $editing->get_image_id(), 'thumbnail', false, array( 'alt' => 'صورة الإعلان الحالية' ) ) : ''; ?></div>
-        <p class="sq-listing-hint">صور الإعلان الحالية محفوظة كما هي. تغيير الصور غير متاح في هذه الدفعة.</p>
-        <?php else : ?>
-        <label for="sq-listing-photos">اختر من صورة إلى خمس صور واضحة *</label>
-        <input type="file" id="sq-listing-photos" name="sq_photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
+        <div class="sq-listing-photo-previews" aria-label="صور الإعلان الحالية">
+          <?php foreach ( array_filter( array_merge( array( $editing->get_image_id() ), $editing->get_gallery_image_ids() ) ) as $current_image_id ) {
+              echo wp_get_attachment_image( $current_image_id, 'thumbnail', false, array( 'alt' => 'صورة الإعلان الحالية' ) );
+          } ?>
+        </div>
+        <p class="sq-listing-hint" id="sq-listing-photo-help">اترك الحقل فارغًا للاحتفاظ بالصور الحالية، أو اختر من صورة إلى خمس صور لاستبدالها. تبقى الملفات السابقة محفوظة في مكتبة الوسائط.</p>
+        <?php endif; ?>
+        <label for="sq-listing-photos"><?php echo $editing ? 'استبدال صور الإعلان (اختياري)' : 'اختر من صورة إلى خمس صور واضحة *'; ?></label>
+        <input type="file" id="sq-listing-photos" name="sq_photos[]" accept="image/jpeg,image/png,image/webp" multiple <?php echo $editing ? 'aria-describedby="sq-listing-photo-help"' : 'required'; ?>>
         <p class="sq-listing-hint">JPG أو PNG أو WEBP — الحد الأقصى 5 ميجابايت للصورة.</p>
         <p class="sq-listing-file-feedback" id="sq-listing-file-feedback" role="status" aria-live="polite">لم يتم اختيار صورة بعد.</p>
         <div class="sq-listing-photo-previews" id="sq-listing-photo-previews" aria-label="معاينة الصور المختارة"></div>
-        <?php endif; ?>
       </fieldset>
       <fieldset class="sq-listing-panel">
         <legend>معلومات المنتج</legend>
@@ -175,7 +178,7 @@ $alerts = array(
     file.addEventListener('change', function(){
       clearPreviews();
       const selected = Array.from(file.files || []);
-      if (!selected.length) { feedback.textContent = 'لم يتم اختيار صورة بعد.'; return; }
+      if (!selected.length) { file.setCustomValidity(''); feedback.textContent = file.required ? 'لم يتم اختيار صورة بعد.' : 'لم تختر صورًا جديدة. ستبقى الصور الحالية.'; return; }
       const tooLarge = selected.some(function(f){return f.size > 5*1024*1024;});
       const invalidType = selected.some(function(f){return !['image/jpeg','image/png','image/webp'].includes(f.type);});
       if (selected.length > 5 || tooLarge || invalidType) {
