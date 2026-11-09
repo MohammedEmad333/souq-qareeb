@@ -10,6 +10,7 @@ $shop_url = $shop_id > 0 ? get_permalink( $shop_id ) : home_url( '/' );
 $get_filter = static function ( $key ) {
     return isset( $_GET[ $key ] ) && is_scalar( $_GET[ $key ] ) ? sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) : '';
 };
+$selected_category = sq_selected_catalog_category();
 $cats = array();
 $conditions = array();
 if ( $is_listing && taxonomy_exists( 'product_cat' ) ) {
@@ -40,7 +41,7 @@ if ( $is_listing && taxonomy_exists( 'pa_condition' ) ) {
         <select id="sq-listing-category" name="sq_category">
           <option value="">كل التصنيفات</option>
           <?php foreach ( $cats as $cat ) : ?>
-            <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( sanitize_title( $get_filter( 'sq_category' ) ), $cat->slug ); ?>><?php echo esc_html( $cat->name ); ?></option>
+            <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( $selected_category, $cat->slug ); ?>><?php echo esc_html( $cat->name ); ?></option>
           <?php endforeach; ?>
         </select>
       </label>
