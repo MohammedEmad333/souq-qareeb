@@ -1,0 +1,55 @@
+{
+  "base_commit": "ef01ec5d2f3591d6f5ffae241a407fa3af29afdf",
+  "release_commit": "b85d6db171e309133a46205d11a0a2403747b65b",
+  "scope": "8 changed theme files only; no database, uploads, MU plugins, credentials or Compose files",
+  "deployed": false,
+  "files": [
+    {
+      "path": "functions.php",
+      "before_sha256": "ad2a50ef1e03c470e4e3eeb2994d54846a3972614ddc0d78c86e669a9729dd73",
+      "after_sha256": "defccde0697f5c4d01e16c1b59527c9c5f43df6913bcb026f72afd622e349a00"
+    },
+    {
+      "path": "inc/admin-dashboard.php",
+      "before_sha256": "51593e76f8870223fe2884e458d2b86d0f3976e5c419cff4492a9be86411ff7c",
+      "after_sha256": "8c9545f1f7af03bb773ab8d2ccc2de0b2dcff5ef1e4f36c08c9fa61d1d0dc292"
+    },
+    {
+      "path": "inc/catalog-filters.php",
+      "before_sha256": "8cfeaded0bd7895c1bf4947c9d875def7ada00c785a5870535a1848a149e3f91",
+      "after_sha256": "c5f79cfb0d7e250d45e7e27206bffee6095a096e57abe9a2e273df4f95e62477"
+    },
+    {
+      "path": "inc/contact-phone.php",
+      "before_sha256": null,
+      "after_sha256": "573900e7b01d9471bc6582a6cad839b5cab68772b81b8b802057a37b1fb1b92b"
+    },
+    {
+      "path": "inc/listing-edit.php",
+      "before_sha256": "7d4311bce262bd944d34e09ae1cc9d651f599926b65c69dea82e89fe15c6923a",
+      "after_sha256": "c4263ea8b955ae1bf95cb3b63491bf56c3a9faa4cd6dbb46a239c5d0a2c324e6"
+    },
+    {
+      "path": "inc/listings.php",
+      "before_sha256": "34ff295083c333fe27ac74762e4bfae3eb43f1b407a93e7a70ea7e73693a6226",
+      "after_sha256": "af29953518b2eb747d36e43f399eeb824f39574b8bc3bca35d439d2a9ca1d83b"
+    },
+    {
+      "path": "page-add-listing.php",
+      "before_sha256": "587023a8c2eff7e0152d11010cf864d5ceeed46b83de746307d76b6e780e7d09",
+      "after_sha256": "214446adf42b7267c098dcc19c673e94219b0fc51c2367e43aa2d050d21c589e"
+    },
+    {
+      "path": "woocommerce.php",
+      "before_sha256": "c0a9b52a54c976380e9946e4ded64f03e796381bc247b4af4e0c692a5b26583f",
+      "after_sha256": "28be5781bf69094240b2c62951c561b29266182e76263661cb21bf157b8dc1bb"
+    }
+  ],
+  "manifest_phase": "Prepared before deployment; deployed=false below is the original preparation state, not current production status.",
+  "deployment_follow_up": {
+    "user_reported_success": true,
+    "reported_release": "b85d6db",
+    "server_files_independently_verified": false,
+    "report": "../../PRODUCTION_ACCEPTANCE_2026_11_09_AR.md"
+  }
+}
