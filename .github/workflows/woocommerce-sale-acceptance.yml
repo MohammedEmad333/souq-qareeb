@@ -1,0 +1,67 @@
+name: Isolated WooCommerce sale acceptance
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/test-woocommerce-sale-acceptance.php'
+      - 'wordpress/themes/souq-qareeb/**'
+      - '.github/workflows/woocommerce-sale-acceptance.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/test-woocommerce-sale-acceptance.php'
+      - 'wordpress/themes/souq-qareeb/**'
+      - '.github/workflows/woocommerce-sale-acceptance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-sale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: souq_test
+          MYSQL_USER: souq_test
+          MYSQL_PASSWORD: integration_test_only
+          MYSQL_ROOT_PASSWORD: integration_root_test_only
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uintegration -pintegration || mysqladmin ping -h 127.0.0.1 -uroot -pintegration_root_test_only"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: wp-cli
+          extensions: mysqli, pdo_mysql, curl, gd, intl, mbstring, xml, zip
+          coverage: none
+      - name: Install isolated WordPress
+        env:
+          WP_CLI_ALLOW_ROOT: '1'
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/souq-wp/wp-content/themes" "$RUNNER_TEMP/souq-wp/wp-content/mu-plugins"
+          wp core download --path="$RUNNER_TEMP/souq-wp" --quiet
+          wp config create --path="$RUNNER_TEMP/souq-wp" --dbhost=127.0.0.1:3306 --dbname=souq_test --dbuser=souq_test --dbpass=integration_test_only --quiet
+          wp core install --path="$RUNNER_TEMP/souq-wp" --url=http://127.0.0.1:8096 --title="Souq isolated QA" --admin_user=qa_admin --admin_password="only-for-disposable-qa" --admin_email=qa-admin@example.invalid --skip-email --quiet
+          wp plugin install woocommerce --activate --path="$RUNNER_TEMP/souq-wp" --quiet
+          cp -R wordpress/themes/souq-qareeb "$RUNNER_TEMP/souq-wp/wp-content/themes/souq-qareeb"
+          cp -R wordpress/mu-plugins/. "$RUNNER_TEMP/souq-wp/wp-content/mu-plugins/"
+          wp theme activate souq-qareeb --path="$RUNNER_TEMP/souq-wp" --quiet
+      - name: Verify two-customer order and one-item stock lifecycle
+        env:
+          WP_CLI_ALLOW_ROOT: '1'
+        run: |
+          set -euo pipefail
+          php -l scripts/test-woocommerce-sale-acceptance.php
+          wp eval-file "$GITHUB_WORKSPACE/scripts/test-woocommerce-sale-acceptance.php" --path="$RUNNER_TEMP/souq-wp"
