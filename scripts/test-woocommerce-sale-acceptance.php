@@ -18,6 +18,7 @@ function sq_accept( $condition, $message ) {
 }
 
 // No outgoing email, real customer data, real payments or webhook calls.
+require_once ABSPATH . 'wp-admin/includes/user.php';
 add_filter( 'pre_wp_mail', '__return_true' );
 update_option( 'woocommerce_manage_stock', 'yes' );
 update_option( 'woocommerce_hold_stock_minutes', '' );
