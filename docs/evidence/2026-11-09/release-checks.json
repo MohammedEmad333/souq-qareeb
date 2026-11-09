@@ -1,0 +1,72 @@
+{
+  "release_commit": "b85d6db171e309133a46205d11a0a2403747b65b",
+  "merged_prs": [
+    {
+      "number": 60,
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/pull/60",
+      "sha": "3ece81039c7d9505e18fa0f523a5cfb7a02da103",
+      "merged_at": "2026-11-09T12:14:43Z"
+    },
+    {
+      "number": 61,
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/pull/61",
+      "sha": "b85d6db171e309133a46205d11a0a2403747b65b",
+      "merged_at": "2026-11-09T12:18:05Z"
+    }
+  ],
+  "combined_pr61_tested_head": "83588ed001b0658e6b973122ac8448c54b4b7d87",
+  "release_checks": [
+    {
+      "name": "browser-checkout",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615878967/job/129155497537"
+    },
+    {
+      "name": "lint",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861910/job/129155434902"
+    },
+    {
+      "name": "syntax",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861878/job/129155434694"
+    },
+    {
+      "name": "Validate snapshots and scripts",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861835/job/129155434371"
+    },
+    {
+      "name": "Validate deployment shell scripts",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861848/job/129155434330"
+    },
+    {
+      "name": "PHP lint (8.3)",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861827/job/129155434132"
+    },
+    {
+      "name": "Validate Compose config",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861748/job/129155433887"
+    },
+    {
+      "name": "syntax",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861731/job/129155433881"
+    },
+    {
+      "name": "isolated-sale",
+      "conclusion": "success",
+      "url": "https://github.com/MohammedEmad333/souq-qareeb/actions/runs/42615861729/job/129155433768"
+    }
+  ],
+  "local_combined_regressions": [
+    "catalog filters including 6 category cases",
+    "contact phone",
+    "moderation permissions",
+    "listing inventory",
+    "demo checkout guard"
+  ]
+}

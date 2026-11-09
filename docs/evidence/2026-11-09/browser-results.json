@@ -1,0 +1,421 @@
+{
+  "results": [
+    {
+      "test": "category-selected-after-reload",
+      "category": "used-electronics",
+      "products": [
+        "مصباح دراسة مستعمل"
+      ],
+      "url": "https://souq.edubridge.win/product-category/used-electronics/"
+    },
+    {
+      "test": "electronics-filter-submit",
+      "result": "single matching lamp product, WooCommerce single-result redirect",
+      "url": "https://souq.edubridge.win/product/%d9%85%d8%b5%d8%a8%d8%a7%d8%ad-%d8%af%d8%b1%d8%a7%d8%b3%d8%a9-%d9%85%d8%b3%d8%aa%d8%b9%d9%85%d9%84/"
+    },
+    {
+      "test": "furniture-filter-submit",
+      "category": "%d8%a3%d8%ab%d8%a7%d8%ab-%d9%85%d8%b3%d8%aa%d8%b9%d9%85%d9%84",
+      "products": [
+        "رف كتب خشبي مستعمل",
+        "كرسي دراسة مستعمل",
+        "كرسي مكتب مستعمل",
+        "مصباح دراسة مكتبي مستعمل",
+        "مكتب دراسة خشبي مستعمل"
+      ],
+      "url": "https://souq.edubridge.win/shop/?s=&post_type=product&sq_category=%25d8%25a3%25d8%25ab%25d8%25a7%25d8%25ab-%25d9%2585%25d8%25b3%25d8%25aa%25d8%25b9%25d9%2585%25d9%2584&sq_condition=&min_price=&max_price="
+    },
+    {
+      "test": "legacy-invalid-contact",
+      "contacts": [],
+      "title": "كرسي دراسة مستعمل",
+      "url": "https://souq.edubridge.win/product/%d9%83%d8%b1%d8%b3%d9%8a-%d8%af%d8%b1%d8%a7%d8%b3%d8%a9-%d9%85%d8%b3%d8%aa%d8%b9%d9%85%d9%84/"
+    },
+    {
+      "test": "sold-individually",
+      "result": "second add blocked with native Arabic notice"
+    },
+    {
+      "test": "cart",
+      "result": "one test chair; total ILS35; no quantity control"
+    },
+    {
+      "test": "checkout",
+      "result": "Stripe visible for signed-in session; ILS35; Arabic privacy; order not submitted",
+      "residual": "Save payment information label remains English"
+    },
+    {
+      "test": "invalid-phone-before-submit",
+      "customError": true,
+      "message": ""
+    },
+    {
+      "test": "create-listing",
+      "id": 55,
+      "status": "pending",
+      "image": "WebP",
+      "phone": "synthetic unused country code with Arabic digits; not a real contact"
+    },
+    {
+      "test": "edit-listing",
+      "id": 55,
+      "result": "saved and returned to pending; original photo retained"
+    },
+    {
+      "test": "withdraw-listing",
+      "id": 55,
+      "state": "مسحوب / مسودة",
+      "withdrawButtons": 0
+    },
+    {
+      "test": "production-admin-role",
+      "result": "Customer session did not expose moderation tools; user then signed in officially as admin. Approval and rejection of fixture 55 passed through moderation UI. No server-side denial attempt was made from customer session."
+    },
+    {
+      "test": "arabic-empty-price-search",
+      "products": [
+        "كرسي دراسة مستعمل",
+        "كرسي مكتب مستعمل"
+      ],
+      "url": "https://souq.edubridge.win/shop/?s=%D9%83%D8%B1%D8%B3%D9%8A&post_type=product&sq_category=&sq_condition=&min_price=&max_price="
+    },
+    {
+      "test": "minimum-40-search",
+      "title": "كرسي مكتب مستعمل",
+      "url": "https://souq.edubridge.win/product/%d9%83%d8%b1%d8%b3%d9%8a-%d9%85%d9%83%d8%aa%d8%a8-%d9%85%d8%b3%d8%aa%d8%b9%d9%85%d9%84/"
+    },
+    {
+      "test": "maximum-zero-search",
+      "emptyText": "\n\t\tلا توجد منتجات تتوافق مع اختيارك.\t",
+      "productCount": 0,
+      "url": "https://souq.edubridge.win/shop/?s=%D9%83%D8%B1%D8%B3%D9%8A&post_type=product&sq_category=&sq_condition=&min_price=&max_price=0"
+    },
+    {
+      "test": "admin-fixture-isolation",
+      "id": 55,
+      "catalog_visibility": "hidden",
+      "stock_quantity": 0,
+      "backorders": "no",
+      "result": "Saved pending in native product editor; stock zero and hidden catalog state confirmed persisted after approval."
+    },
+    {
+      "test": "production-admin-approve",
+      "id": 55,
+      "result": "Official moderation Approve and publish button returned sq_notice=approved and success message; fixture appeared in published list."
+    },
+    {
+      "test": "production-admin-reject",
+      "id": 55,
+      "precondition": "Fixture returned to pending through native product editor after approval test.",
+      "result": "Official Reject button returned sq_notice=rejected and notice that fixture was moved to drafts and not visible to visitors. Fixture confirmed in draft list."
+    },
+    {
+      "test": "stripe-test-payment-order57",
+      "result": "succeeded",
+      "amountILS": 5,
+      "livemode": false
+    },
+    {
+      "test": "stripe-webhook-order57",
+      "event": "evt_3UZwuKK4r86EnWgc0gUtqD9O",
+      "type": "payment_intent.succeeded",
+      "actionId": 502,
+      "state": "complete"
+    },
+    {
+      "test": "paid-order-inventory-depletion",
+      "productId": 55,
+      "stockBefore": 1,
+      "stockAfter": 0,
+      "repeatAdd": "blocked"
+    }
+  ],
+  "matrix": [
+    {
+      "page": "product",
+      "requested": 375,
+      "broken": 0,
+      "client": 360,
+      "dir": "rtl",
+      "scroll": 360,
+      "width": 375
+    },
+    {
+      "page": "edit",
+      "requested": 375,
+      "broken": 0,
+      "client": 360,
+      "dir": "rtl",
+      "scroll": 360,
+      "width": 375,
+      "screenshot": true
+    },
+    {
+      "page": "edit",
+      "requested": 430,
+      "broken": 0,
+      "client": 415,
+      "dir": "rtl",
+      "scroll": 415,
+      "width": 431,
+      "screenshot": true
+    },
+    {
+      "page": "edit",
+      "requested": 768,
+      "broken": 0,
+      "client": 753,
+      "dir": "rtl",
+      "scroll": 753,
+      "width": 768,
+      "screenshot": true
+    },
+    {
+      "page": "edit",
+      "requested": 1366,
+      "broken": 0,
+      "client": 1351,
+      "dir": "rtl",
+      "scroll": 1351,
+      "width": 1366,
+      "screenshot": true
+    },
+    {
+      "page": "edit",
+      "requested": 1920,
+      "broken": 0,
+      "client": 1905,
+      "dir": "rtl",
+      "scroll": 1905,
+      "width": 1921,
+      "screenshot": true
+    },
+    {
+      "page": "add",
+      "requested": 375,
+      "broken": 0,
+      "client": 360,
+      "dir": "rtl",
+      "scroll": 360,
+      "width": 375,
+      "screenshot": true
+    },
+    {
+      "page": "add",
+      "requested": 430,
+      "broken": 0,
+      "client": 415,
+      "dir": "rtl",
+      "scroll": 415,
+      "width": 431,
+      "screenshot": true
+    },
+    {
+      "page": "add",
+      "requested": 768,
+      "broken": 0,
+      "client": 753,
+      "dir": "rtl",
+      "scroll": 753,
+      "width": 768,
+      "screenshot": true
+    },
+    {
+      "page": "add",
+      "requested": 1366,
+      "broken": 0,
+      "client": 1351,
+      "dir": "rtl",
+      "scroll": 1351,
+      "width": 1366,
+      "screenshot": true
+    },
+    {
+      "page": "add",
+      "requested": 1920,
+      "broken": 0,
+      "client": 1905,
+      "dir": "rtl",
+      "scroll": 1905,
+      "width": 1921,
+      "screenshot": true
+    },
+    {
+      "page": "category",
+      "requested": 375,
+      "broken": 0,
+      "client": 360,
+      "dir": "rtl",
+      "scroll": 360,
+      "width": 375,
+      "screenshot": true
+    },
+    {
+      "page": "category",
+      "requested": 430,
+      "broken": 0,
+      "client": 415,
+      "dir": "rtl",
+      "scroll": 415,
+      "width": 431,
+      "screenshot": true
+    },
+    {
+      "page": "category",
+      "requested": 768,
+      "broken": 0,
+      "client": 753,
+      "dir": "rtl",
+      "scroll": 753,
+      "width": 768,
+      "screenshot": true
+    },
+    {
+      "page": "category",
+      "requested": 1366,
+      "broken": 0,
+      "client": 1351,
+      "dir": "rtl",
+      "scroll": 1351,
+      "width": 1366,
+      "screenshot": true
+    },
+    {
+      "page": "category",
+      "requested": 1920,
+      "broken": 0,
+      "client": 1905,
+      "dir": "rtl",
+      "scroll": 1905,
+      "width": 1921,
+      "screenshot": true
+    },
+    {
+      "page": "product",
+      "requested": 375,
+      "broken": 0,
+      "client": 360,
+      "dir": "rtl",
+      "scroll": 360,
+      "width": 375,
+      "screenshot": true
+    },
+    {
+      "page": "product",
+      "requested": 430,
+      "broken": 0,
+      "client": 415,
+      "dir": "rtl",
+      "scroll": 415,
+      "width": 431,
+      "screenshot": true
+    },
+    {
+      "page": "product",
+      "requested": 768,
+      "broken": 0,
+      "client": 753,
+      "dir": "rtl",
+      "scroll": 753,
+      "width": 768,
+      "screenshot": true
+    },
+    {
+      "page": "product",
+      "requested": 1366,
+      "broken": 0,
+      "client": 1351,
+      "dir": "rtl",
+      "scroll": 1351,
+      "width": 1366,
+      "screenshot": true
+    },
+    {
+      "page": "product",
+      "requested": 1920,
+      "broken": 0,
+      "client": 1905,
+      "dir": "rtl",
+      "scroll": 1905,
+      "width": 1921,
+      "screenshot": true
+    },
+    {
+      "page": "admin-draft",
+      "requested": 375,
+      "width": 375,
+      "client": 360,
+      "scroll": 360,
+      "dir": "rtl",
+      "broken": 0,
+      "screenshot": true
+    },
+    {
+      "page": "admin-draft",
+      "requested": 430,
+      "width": 431,
+      "client": 415,
+      "scroll": 415,
+      "dir": "rtl",
+      "broken": 0,
+      "screenshot": true
+    },
+    {
+      "page": "admin-draft",
+      "requested": 768,
+      "width": 768,
+      "client": 753,
+      "scroll": 753,
+      "dir": "rtl",
+      "broken": 0,
+      "screenshot": true
+    },
+    {
+      "page": "admin-draft",
+      "requested": 1366,
+      "width": 1366,
+      "client": 1351,
+      "scroll": 1351,
+      "dir": "rtl",
+      "broken": 0,
+      "screenshot": true
+    },
+    {
+      "page": "admin-draft",
+      "requested": 1920,
+      "width": 1921,
+      "client": 1905,
+      "scroll": 1905,
+      "dir": "rtl",
+      "broken": 0,
+      "screenshot": true
+    }
+  ],
+  "notRun": [
+    "See limitations and the acceptance reports; an empty legacy notRun list was not evidence of complete coverage."
+  ],
+  "realOrderSubmitted": false,
+  "limitations": [
+    "Customer moderation UI absent; direct server-side deny scenarios were covered in prior local/CI regressions, not attempted in production.",
+    "Responsive screenshots cover viewport height 900, not every section of long pages.",
+    "Stripe Link not activated warnings in captured console sample; English saved-payment checkbox label remains.",
+    "Stripe acceptance covers one success through order-pay; see ../../STRIPE_TEST_ACCEPTANCE_2026_11_09_AR.md for excluded scenarios."
+  ],
+  "test_fixture_final_state": {
+    "id": 55,
+    "title": "اختبار Stripe فقط — منتج افتراضي غير معروض للبيع",
+    "post_status": "draft",
+    "catalog_visibility": "hidden",
+    "stock_quantity": 0,
+    "other_listings_modified": false,
+    "deleted": false,
+    "virtual": true,
+    "price_ILS": 5
+  },
+  "console_sample": {
+    "uploaded": false,
+    "summary": "Stripe Link not activated warning; no error in captured sample."
+  },
+  "testOrderSubmitted": true,
+  "stripeAcceptance": "stripe-results.json"
+}

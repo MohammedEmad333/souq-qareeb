@@ -1,0 +1,22 @@
+{
+  "orderId": 57,
+  "productId": 55,
+  "actionId": 502,
+  "hook": "wc_stripe_deferred_webhook",
+  "actionState": "complete",
+  "eventId": "evt_3UZwuKK4r86EnWgc0gUtqD9O",
+  "eventType": "payment_intent.succeeded",
+  "paymentIntent": "pi_3UZwuKK4r86EnWgc0hfifHWj",
+  "charge": "ch_3UZwuKK4r86EnWgc0UXbiCWA",
+  "livemode": false,
+  "paymentStatus": "succeeded",
+  "amount": 500,
+  "amountReceived": 500,
+  "currency": "ils",
+  "eventCreatedUtc": "2026-11-09T18:03:05Z",
+  "actionCreatedUtc": "2026-11-09T18:03:07Z",
+  "actionCompletedUtc": "2026-11-09T18:03:20Z",
+  "setupFutureUsage": null,
+  "pendingWebhooksFromReceivedPayload": 1,
+  "source": "WooCommerce Scheduled Actions, search exact payment intent; no action manually run."
+}
