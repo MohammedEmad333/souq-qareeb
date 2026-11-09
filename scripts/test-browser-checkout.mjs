@@ -52,10 +52,18 @@ try {
   });
 
   // A separate browser session cannot buy the exhausted one-off product.
-  await pageB.goto(productURL, { waitUntil: 'domcontentloaded' });
-  await pageB.getByText('QA Unique Item - Browser Test').first().waitFor({ timeout: 12000 });
-  assert.equal(await pageB.locator('button.single_add_to_cart_button').count(), 0, 'Buyer B should not see add-to-cart once sold');
-  console.log('PASS: browser B sees sold item as non-purchasable');
+  const soldPage = await pageB.goto(productURL, { waitUntil: 'domcontentloaded' });
+  assert.ok([200, 404].includes(soldPage.status()), 'Sold product may be viewable or absent, never purchasable');
+  const soldAdd = pageB.locator('button.single_add_to_cart_button');
+  assert.ok((await soldAdd.count()) === 0 || await soldAdd.isDisabled(), 'Sold item has no enabled add-to-cart button');
+
+  // Also attempt a direct add-to-cart URL, bypassing the product page UI.
+  const productID = Number(process.env.QA_PRODUCT_ID);
+  assert.ok(Number.isSafeInteger(productID) && productID > 0, 'Synthetic product id required');
+  await pageB.goto(new URL('/?add-to-cart=' + productID, root).toString(), { waitUntil: 'domcontentloaded' });
+  await pageB.goto(cartURL, { waitUntil: 'domcontentloaded' });
+  assert.equal(await pageB.locator('.woocommerce-cart-form .cart_item').count(), 0, 'Buyer B cannot add sold item even via direct URL');
+  console.log('PASS: browser B cannot purchase exhausted item, including direct add-to-cart');
 
   await pageB.goto(accountURL, { waitUntil: 'domcontentloaded' });
   await pageB.locator('body').waitFor();
