@@ -1,0 +1,17 @@
+{
+  "environment": "production read-only Stripe configuration review; user reported redeployment before this work",
+  "wordpressStripePluginVersion": "11.1.1",
+  "woocommerceVersion": "11.2.1",
+  "testModeActive": true,
+  "wooCommerceLinkEnabled": true,
+  "stripeJsWarning": "The following payment method types are not activated: link. They will be displayed in test mode, but hidden in live mode.",
+  "conclusion": "WooCommerce requests Link, while Stripe reports the method inactive on the connected account. This is a payment-method configuration mismatch, not an Arabic-label bug.",
+  "productionSettingsChanged": false,
+  "cardOrPaymentDataSaved": false,
+  "orderSubmitted": false,
+  "limitations": [
+    "Stripe Dashboard account configuration was not inspected or changed.",
+    "Full checkout/Stripe.js with the proposed code was not tested in production.",
+    "Save checkbox was present in initial server HTML; absent from the final accessibility snapshot after Link initialized. Its visibility remains owned by Stripe."
+  ]
+}
