@@ -1,0 +1,32 @@
+name: Production public read-only smoke
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/production-public-smoke.sh'
+      - 'scripts/production-stripe-preflight.sh'
+      - '.github/workflows/production-public-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/production-public-smoke.sh'
+      - 'scripts/production-stripe-preflight.sh'
+      - '.github/workflows/production-public-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-routes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check read-only probe syntax
+        run: |
+          set -euo pipefail
+          bash -n scripts/production-public-smoke.sh
+          bash -n scripts/production-stripe-preflight.sh
+      - name: Verify public production pages (GET only)
+        run: bash scripts/production-public-smoke.sh
