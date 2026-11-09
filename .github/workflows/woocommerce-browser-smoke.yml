@@ -1,0 +1,78 @@
+name: Ephemeral WooCommerce browser checkout smoke
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/qa-browser-fixtures.php'
+      - 'scripts/test-browser-checkout.mjs'
+      - '.github/workflows/woocommerce-browser-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/qa-browser-fixtures.php'
+      - 'scripts/test-browser-checkout.mjs'
+      - '.github/workflows/woocommerce-browser-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-checkout:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: souq_browser_qa
+          MYSQL_USER: souq_browser_qa
+          MYSQL_PASSWORD: disposable_ci_password
+          MYSQL_ROOT_PASSWORD: disposable_ci_root_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pdisposable_ci_root_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP and WP-CLI
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: wp-cli
+          extensions: mysqli, pdo_mysql, curl, gd, intl, mbstring, xml, zip
+          coverage: none
+      - name: Install disposable WordPress, WooCommerce and local-only fixtures
+        env:
+          WP_CLI_ALLOW_ROOT: '1'
+        run: |
+          set -euo pipefail
+          export QA_WP_PATH="$RUNNER_TEMP/souq-browser-wp"
+          echo "QA_WP_PATH=$QA_WP_PATH" >> "$GITHUB_ENV"
+          echo "QA_FIXTURE_SCRIPT=$GITHUB_WORKSPACE/scripts/qa-browser-fixtures.php" >> "$GITHUB_ENV"
+          echo "QA_SITE_ROOT=http://127.0.0.1:8096" >> "$GITHUB_ENV"
+          mkdir -p "$QA_WP_PATH/wp-content/themes" "$QA_WP_PATH/wp-content/mu-plugins"
+          wp core download --path="$QA_WP_PATH" --quiet
+          wp config create --path="$QA_WP_PATH" --dbhost=127.0.0.1:3306 --dbname=souq_browser_qa --dbuser=souq_browser_qa --dbpass=disposable_ci_password --quiet
+          wp core install --path="$QA_WP_PATH" --url=http://127.0.0.1:8096 --title="Disposable Souq browser QA" --admin_user=qa_admin --admin_password="disposable-ci-admin-only" --admin_email=qa-admin@example.invalid --skip-email --quiet
+          wp plugin install woocommerce --activate --path="$QA_WP_PATH" --quiet
+          cp -R wordpress/themes/souq-qareeb "$QA_WP_PATH/wp-content/themes/souq-qareeb"
+          cp -R wordpress/mu-plugins/. "$QA_WP_PATH/wp-content/mu-plugins/"
+          wp theme activate souq-qareeb --path="$QA_WP_PATH" --quiet
+          php -l scripts/qa-browser-fixtures.php
+          SQ_QA_PHASE=prepare wp eval-file "$GITHUB_WORKSPACE/scripts/qa-browser-fixtures.php" --path="$QA_WP_PATH"
+          php -S 127.0.0.1:8096 -t "$QA_WP_PATH" "$QA_WP_PATH/index.php" > "$RUNNER_TEMP/souq-browser-php.log" 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8096/ -o /dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8096/ -o /dev/null
+      - name: Run browser checkout and sold-item smoke tests
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+          node scripts/test-browser-checkout.mjs
