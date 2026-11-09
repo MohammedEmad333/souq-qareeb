@@ -145,6 +145,7 @@ add_action( 'woocommerce_single_product_summary', function () {
 }, 17 );
 
 /* A page with slug add-listing renders a moderated form; no public API is exposed. */
+require_once get_template_directory() . '/inc/contact-phone.php';
 require_once get_template_directory() . '/inc/listings.php';
 require_once get_template_directory() . '/inc/listing-edit.php';
 

@@ -23,6 +23,7 @@ $status = isset( $_GET['sq_listing_status'] ) && is_scalar( $_GET['sq_listing_st
 $alerts = array(
     'submitted' => 'وصل إعلانك بنجاح، وهو الآن بانتظار مراجعة المشرف قبل ظهوره في المتجر.',
     'invalid' => 'يرجى مراجعة جميع الحقول المطلوبة ثم إعادة إرسال الإعلان.',
+    'phone' => 'أدخل رقم تواصل دوليًا صحيحًا مع رمز الدولة، مثل +970591234567، بدلًا من رقم محلي يبدأ بصفر.',
     'photos' => 'تعذّر رفع الصور. استخدم من صورة إلى خمس صور بصيغة JPG أو PNG أو WEBP، وبحد أقصى 5 ميجابايت للصورة.',
     'limit' => 'وصلت إلى الحد اليومي للإعلانات (خمسة إعلانات خلال 24 ساعة).',
     'unavailable' => 'تعذّر حفظ الإعلان حاليًا. حاول مجددًا لاحقًا.',
@@ -126,8 +127,9 @@ $alerts = array(
               <option value="phone" <?php selected( $edit_contact, 'phone' ); ?>>اتصال هاتفي</option>
             </select>
           </label>
-          <label class="sq-listing-field" for="sq-listing-phone"><span>رقم التواصل الدولي *</span>
-            <input type="tel" id="sq-listing-phone" name="sq_phone" minlength="9" maxlength="20" value="<?php echo esc_attr( $edit_phone ); ?>" placeholder="9705xxxxxxxx" required>
+          <label class="sq-listing-field" for="sq-listing-phone"><span id="sq-phone-label">رقم التواصل الدولي *</span>
+            <input type="tel" id="sq-listing-phone" name="sq_phone" dir="ltr" autocomplete="tel" aria-labelledby="sq-phone-label" aria-describedby="sq-phone-hint" minlength="9" maxlength="32" value="<?php echo esc_attr( $edit_phone ); ?>" placeholder="+970591234567" required>
+            <small id="sq-phone-hint">أدخل رقمًا دوليًا مع رمز الدولة، مثل +970591234567. الرقم المحلي الذي يبدأ بصفر غير مقبول؛ لن نخمّن رمز الدولة.</small>
           </label>
         </div>
         <p class="sq-listing-hint">بعد الموافقة على نشر إعلانك، يظهر للزائر زر تواصل يفتح رقمك في واتساب أو تطبيق الهاتف وفق اختيارك. لا ترسل معلومات لا تريد مشاركتها مع الآخرين.</p>
@@ -148,6 +150,21 @@ $alerts = array(
   const status = document.getElementById('sq-listing-submit-feedback');
   const submit = form.querySelector('button[type="submit"]');
   const previews = document.getElementById('sq-listing-photo-previews');
+  const phone = document.getElementById('sq-listing-phone');
+  if (phone) {
+    const validatePhone = function(){
+      let value = phone.value.trim().replace(/[٠-٩۰-۹]/g, function(digit){
+        const code = digit.charCodeAt(0);
+        return String(code >= 0x6f0 ? code - 0x6f0 : code - 0x660);
+      }).replace(/[\s()\-]+/gu, '');
+      value = value.startsWith('00') ? value.slice(2) : value.replace(/^\+/, '');
+      phone.setCustomValidity(!phone.value || /^[1-9][0-9]{8,14}$/.test(value)
+        ? '' : 'أدخل رقمًا دوليًا مع رمز الدولة، مثل +970591234567، دون صفر محلي في البداية.');
+    };
+    phone.addEventListener('input', validatePhone);
+    phone.addEventListener('change', validatePhone);
+    validatePhone();
+  }
   let previewUrls = [];
   function clearPreviews(){
     previewUrls.forEach(function(url){URL.revokeObjectURL(url);});
