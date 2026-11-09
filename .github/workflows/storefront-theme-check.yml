@@ -4,11 +4,17 @@ on:
     paths:
       - 'wordpress/themes/souq-qareeb/**'
       - 'scripts/test-listing-inventory.php'
+      - 'scripts/test-catalog-filters.php'
+      - 'scripts/test-contact-phone.php'
+      - 'scripts/test-moderation-permissions.php'
       - '.github/workflows/storefront-theme-check.yml'
   pull_request:
     paths:
       - 'wordpress/themes/souq-qareeb/**'
       - 'scripts/test-listing-inventory.php'
+      - 'scripts/test-catalog-filters.php'
+      - 'scripts/test-contact-phone.php'
+      - 'scripts/test-moderation-permissions.php'
       - '.github/workflows/storefront-theme-check.yml'
 permissions:
   contents: read
@@ -27,3 +33,8 @@ jobs:
 
       - name: Test community listing inventory rules
         run: docker run --rm -v "$PWD:/src:ro" -w /src php:8.3-cli php scripts/test-listing-inventory.php
+
+      - name: Test international contact links and moderation permissions
+        run: |
+          docker run --rm -v "$PWD:/src:ro" -w /src php:8.3-cli php scripts/test-contact-phone.php
+          docker run --rm -v "$PWD:/src:ro" -w /src php:8.3-cli php scripts/test-moderation-permissions.php

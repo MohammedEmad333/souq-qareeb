@@ -9,6 +9,14 @@ function sq_moderation_url( $args = array() ) {
     return add_query_arg( $args, admin_url( 'admin.php?page=sq-moderation' ) );
 }
 
+/** Publishing needs its own capability, in addition to editing this product. */
+function sq_can_moderate_listing( $id, $decision ) {
+    return in_array( $decision, array( 'approve', 'reject' ), true )
+        && current_user_can( 'edit_products' )
+        && current_user_can( 'edit_post', $id )
+        && ( 'approve' !== $decision || current_user_can( 'publish_products' ) );
+}
+
 add_action( 'admin_menu', function () {
     add_menu_page(
         'إدارة سوق قريب',
@@ -28,8 +36,7 @@ add_action( 'admin_post_sq_moderate_listing', function () {
     $id = isset( $_POST['listing_id'] ) && is_scalar( $_POST['listing_id'] ) ? absint( wp_unslash( $_POST['listing_id'] ) ) : 0;
     $decision = isset( $_POST['decision'] ) && is_scalar( $_POST['decision'] ) ? sanitize_key( wp_unslash( $_POST['decision'] ) ) : '';
     check_admin_referer( 'sq_moderate_' . $id, 'sq_moderate_nonce' );
-    if ( ! $id || ! in_array( $decision, array( 'approve', 'reject' ), true )
-        || ! current_user_can( 'edit_post', $id ) ) {
+    if ( ! $id || ! sq_can_moderate_listing( $id, $decision ) ) {
         wp_die( 'العملية غير مسموحة.', '', array( 'response' => 403 ) );
     }
     $post = get_post( $id );
@@ -116,6 +123,9 @@ function sq_render_moderation() {
             echo '<div class="sq-admin-actions"><a href="' . esc_url( get_edit_post_link( $id ) ) . '">عرض التفاصيل والتحرير</a>';
             if ( 'pending' === $status && current_user_can( 'edit_post', $id ) ) {
                 foreach ( array( 'approve' => 'الموافقة والنشر', 'reject' => 'رفض الإعلان' ) as $decision => $label ) {
+                    if ( ! sq_can_moderate_listing( $id, $decision ) ) {
+                        continue;
+                    }
                     echo '<form action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" method="post">';
                     echo '<input type="hidden" name="action" value="sq_moderate_listing">';
                     echo '<input type="hidden" name="listing_id" value="' . esc_attr( $id ) . '">';
