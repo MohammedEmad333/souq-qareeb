@@ -62,8 +62,13 @@ add_action( 'admin_post_sq_update_listing', function () {
     $city = sq_listing_field( 'sq_city' );
     $price_raw = sq_listing_field( 'sq_price' );
     $method = sq_listing_field( 'sq_contact' );
-    $phone = preg_replace( '/[^0-9]/', '', sq_listing_field( 'sq_phone' ) );
+    $phone = sq_normalize_contact_phone( sq_listing_field( 'sq_phone' ) );
     $type = get_post_meta( $id, '_sq_listing_type', true );
+    if ( '' === $phone ) {
+        wp_safe_redirect( sq_listing_edit_url( $id, 'phone' ) );
+        exit;
+    }
+
     $length = static function ( $value ) {
         return function_exists( 'mb_strlen' ) ? mb_strlen( $value, 'UTF-8' ) : strlen( $value );
     };
@@ -75,7 +80,6 @@ add_action( 'admin_post_sq_update_listing', function () {
         || ! in_array( $condition, array( 'excellent', 'good', 'fair' ), true )
         || '' === trim( $city ) || $length( $city ) > 60
         || ! in_array( $method, array( 'whatsapp', 'phone' ), true )
-        || strlen( $phone ) < 9 || strlen( $phone ) > 15
         || ( 'sell' === $type && ( ! is_numeric( $price_raw )
             || (float) wc_format_decimal( $price_raw ) <= 0
             || (float) wc_format_decimal( $price_raw ) > 1000000 ) ) ) {

@@ -51,7 +51,12 @@ add_action( 'admin_post_sq_submit_listing', function () {
     $city      = sq_listing_field( 'sq_city' );
     $price_raw = sq_listing_field( 'sq_price' );
     $method    = sq_listing_field( 'sq_contact' );
-    $phone     = preg_replace( '/[^0-9]/', '', sq_listing_field( 'sq_phone' ) );
+    $phone     = sq_normalize_contact_phone( sq_listing_field( 'sq_phone' ) );
+
+    if ( '' === $phone ) {
+        wp_safe_redirect( sq_listing_return_url( 'phone' ) );
+        exit;
+    }
 
     $length = static function ( $text ) {
         return function_exists( 'mb_strlen' ) ? mb_strlen( $text, 'UTF-8' ) : strlen( $text );
@@ -62,8 +67,7 @@ add_action( 'admin_post_sq_submit_listing', function () {
          || ! $category || ! term_exists( $category, 'product_cat' )
          || ! in_array( $condition, array( 'excellent', 'good', 'fair' ), true )
          || '' === $city || $length( $city ) > 60
-         || ! in_array( $method, array( 'whatsapp', 'phone' ), true )
-         || strlen( $phone ) < 9 || strlen( $phone ) > 15 ) {
+         || ! in_array( $method, array( 'whatsapp', 'phone' ), true ) ) {
         wp_safe_redirect( sq_listing_return_url( 'invalid' ) );
         exit;
     }
@@ -211,9 +215,9 @@ add_action( 'woocommerce_single_product_summary', function () {
         echo '<span>الموقع: ' . esc_html( $city ) . '</span>';
     }
     echo '</div>';
-    $phone = get_post_meta( $id, '_sq_contact_phone', true );
+    $phone = sq_normalize_contact_phone( get_post_meta( $id, '_sq_contact_phone', true ) );
     $method = get_post_meta( $id, '_sq_contact_method', true );
-    if ( 'publish' !== get_post_status( $id ) || ! preg_match( '/^[0-9]{9,15}$/', $phone ) ) {
+    if ( 'publish' !== get_post_status( $id ) || '' === $phone ) {
         return;
     }
     if ( 'whatsapp' === $method ) {
