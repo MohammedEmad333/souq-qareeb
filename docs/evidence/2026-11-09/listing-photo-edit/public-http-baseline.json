@@ -1,0 +1,129 @@
+{
+  "measuredAtUtc": "2026-11-09T20:32:51.500622+00:00",
+  "method": "12 public anonymous HTTP GETs; 3 samples/page; curl, no credentials or cookies; observer-network baseline, not browser rendering performance",
+  "site": "https://souq.edubridge.win",
+  "samples": [
+    {
+      "path": "/",
+      "httpStatus": 200,
+      "ttfbSeconds": 1.029532,
+      "totalSeconds": 1.061037,
+      "htmlBytes": 52657
+    },
+    {
+      "path": "/shop/",
+      "httpStatus": 200,
+      "ttfbSeconds": 1.236328,
+      "totalSeconds": 1.357075,
+      "htmlBytes": 49318
+    },
+    {
+      "path": "/cart/",
+      "httpStatus": 200,
+      "ttfbSeconds": 1.102995,
+      "totalSeconds": 1.6801,
+      "htmlBytes": 539711
+    },
+    {
+      "path": "/my-account/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.425721,
+      "totalSeconds": 0.545233,
+      "htmlBytes": 39097
+    },
+    {
+      "path": "/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.597208,
+      "totalSeconds": 0.628777,
+      "htmlBytes": 52657
+    },
+    {
+      "path": "/shop/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.536943,
+      "totalSeconds": 0.565604,
+      "htmlBytes": 49318
+    },
+    {
+      "path": "/cart/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.572858,
+      "totalSeconds": 1.089262,
+      "htmlBytes": 539711
+    },
+    {
+      "path": "/my-account/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.390346,
+      "totalSeconds": 0.415614,
+      "htmlBytes": 39097
+    },
+    {
+      "path": "/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.503229,
+      "totalSeconds": 0.543165,
+      "htmlBytes": 52657
+    },
+    {
+      "path": "/shop/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.740082,
+      "totalSeconds": 0.772877,
+      "htmlBytes": 49318
+    },
+    {
+      "path": "/cart/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.58064,
+      "totalSeconds": 0.964648,
+      "htmlBytes": 539711
+    },
+    {
+      "path": "/my-account/",
+      "httpStatus": 200,
+      "ttfbSeconds": 0.506109,
+      "totalSeconds": 0.530645,
+      "htmlBytes": 39097
+    }
+  ],
+  "summary": {
+    "/": {
+      "medianTtfbSeconds": 0.597208,
+      "statuses": [
+        200,
+        200,
+        200
+      ]
+    },
+    "/shop/": {
+      "medianTtfbSeconds": 0.740082,
+      "statuses": [
+        200,
+        200,
+        200
+      ]
+    },
+    "/cart/": {
+      "medianTtfbSeconds": 0.58064,
+      "statuses": [
+        200,
+        200,
+        200
+      ]
+    },
+    "/my-account/": {
+      "medianTtfbSeconds": 0.425721,
+      "statuses": [
+        200,
+        200,
+        200
+      ]
+    }
+  },
+  "limits": [
+    "Not Lighthouse, LCP, INP, CLS, mobile throttling or a load test.",
+    "Does not assess authenticated checkout, Stripe.js, server plugin health or all network resources."
+  ]
+}

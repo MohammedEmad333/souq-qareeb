@@ -8,6 +8,7 @@ on:
       - 'scripts/test-contact-phone.php'
       - 'scripts/test-moderation-permissions.php'
       - 'scripts/test-stripe-checkout-copy.php'
+      - 'scripts/test-listing-photos.php'
       - '.github/workflows/storefront-theme-check.yml'
   pull_request:
     paths:
@@ -17,6 +18,7 @@ on:
       - 'scripts/test-contact-phone.php'
       - 'scripts/test-moderation-permissions.php'
       - 'scripts/test-stripe-checkout-copy.php'
+      - 'scripts/test-listing-photos.php'
       - '.github/workflows/storefront-theme-check.yml'
 permissions:
   contents: read
@@ -43,3 +45,6 @@ jobs:
 
       - name: Test Arabic Stripe save-card copy
         run: docker run --rm -v "$PWD:/src:ro" -w /src php:8.3-cli php scripts/test-stripe-checkout-copy.php
+
+      - name: Test optional listing image validation
+        run: docker run --rm -v "$PWD:/src:ro" -w /src php:8.3-cli php scripts/test-listing-photos.php
